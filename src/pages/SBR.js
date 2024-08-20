@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import CoarseScreenForm from '../components/CoarseScreenForm';
-import CoarseScreenDesignOutput from '../components/CoarseScreenDesignOutput';
-import { calculateCoarseScreenDesign } from '../utils/CoarseScreenCalculateDesign';
+import SBRForm from '../components/SBRForm';
+import SBRDesignOutput from '../components/SBRDesignOutput';
+import { calculateSBRDesign } from '../utils/SBRCalculateDesign';
 import { Container, CssBaseline, Typography, Paper, Box } from '@mui/material';
 import { blue } from '@mui/material/colors';
 
-const CoarseScreen = () => {
+const SBR = () => {
   const [outputs, setOutputs] = useState(null);
 
   const handleCalculate = (inputs) => {
-    const calculatedOutputs = calculateCoarseScreenDesign(inputs);
+    const calculatedOutputs = calculateSBRDesign(inputs);
     setOutputs(calculatedOutputs);
   };
 
@@ -42,14 +42,14 @@ const CoarseScreen = () => {
             variant="h4"
             gutterBottom
           >
-            <b>Coarse Screen Design Calculator</b>
+            <b>SBR Design Calculator</b>
           </Typography>
-          <CoarseScreenForm onCalculate={handleCalculate} />
-          {outputs && <CoarseScreenDesignOutput outputs={outputs} />}
+          <SBRForm onCalculate={handleCalculate} />
+          {outputs && <SBRDesignOutput outputs={outputs} />}
         </Paper>
       </Box>
     </Container>
   );
 };
 
-export default CoarseScreen;
+export default SBR;

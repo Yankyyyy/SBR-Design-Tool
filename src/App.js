@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/Home';
-import CoarseScreen from './pages/CoarseScreen';
+import SBR from './pages/SBR';
 import NavBar from './components/NavBar';
 
 
@@ -13,7 +13,7 @@ const App = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/coarsescreen" element={<CoarseScreen />} />
+        <Route path="/SBR" element={<SBR />} />
       </Routes>
     </HashRouter>
   );
