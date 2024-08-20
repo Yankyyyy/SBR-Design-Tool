@@ -43,11 +43,11 @@ const NavBar = () => {
           getContentAnchorEl={null}
           sx={{ mt: 1 }}
         >
-          <MenuItem component={Link} to="/coarsescreen" onClick={handleMenuClose}>
+          <MenuItem component={Link} to="/SBR" onClick={handleMenuClose}>
             <ListItemIcon>
               <BlurLinear fontSize="small" />
             </ListItemIcon>
-            Coarse Screen
+            SBR
           </MenuItem>
         </Menu>
       </Toolbar>

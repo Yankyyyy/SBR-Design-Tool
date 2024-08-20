@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Button, Grid, Paper, Box } from '@mui/material';
 import ExportPDF from '../utils/ExportPDF'
 
-const CoarseScreenDesignOutput = ({ outputs }) => {
+const SBRDesignOutput = ({ outputs }) => {
 
   const handleClick = () => {
     ExportPDF('divToPrint')
@@ -70,7 +70,7 @@ const CoarseScreenDesignOutput = ({ outputs }) => {
             <Grid item xs={12} sm={6}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="body2">
-                Coarse Screen Opening (mm): <b>{outputs.coarseScreenOpeningMM}</b>
+                Coarse Screen Opening (mm): <b>{outputs.SBROpeningMM}</b>
                 </Typography>
               </Paper>
             </Grid>
@@ -245,4 +245,4 @@ const CoarseScreenDesignOutput = ({ outputs }) => {
   );
 };
 
-export default CoarseScreenDesignOutput;
+export default SBRDesignOutput;

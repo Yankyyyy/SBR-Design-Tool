@@ -3,8 +3,8 @@ function degreesToRadians(degrees) {
 }
 
 
-export const calculateCoarseScreenDesign = (inputs) => {
-  const { averageFlowMLD, peakFactor, minFlowFactor, coarseScreenOpeningMM, depthOfWaterInScreenM, velocityThroughScreenMPerSec,
+export const calculateSBRDesign = (inputs) => {
+  const { averageFlowMLD, peakFactor, minFlowFactor, SBROpeningMM, depthOfWaterInScreenM, velocityThroughScreenMPerSec,
     angleOfInclinationWithTheHorizontalDeg, freeBoardM, widthOfEachBarMM, widthOfEachSideWallMM } = inputs;
   const angleOfInclinationWithTheHorizontalRad = degreesToRadians(angleOfInclinationWithTheHorizontalDeg)
   const averageFlowM3PerSec = ( averageFlowMLD * 1000 ) / ( 24 * 60 * 60 );
@@ -16,13 +16,13 @@ export const calculateCoarseScreenDesign = (inputs) => {
   const lengthOfTheScreenM = ( parseFloat(depthOfWaterInScreenM) + parseFloat(freeBoardM) ) / Math.sin(angleOfInclinationWithTheHorizontalRad);
   const verticalWidthOfOpeningM = parseFloat(verticalAreaOfTheScreenM2) / parseFloat(depthOfWaterInScreenM);
   const inclinedWidthOfTheOpeningM = parseFloat(areaOfTheScreenM2) / parseFloat(depthOfWaterInScreenM);
-  const numberOfOpenings = Math.ceil(( verticalWidthOfOpeningM * 1000 ) / coarseScreenOpeningMM);
+  const numberOfOpenings = Math.ceil(( verticalWidthOfOpeningM * 1000 ) / SBROpeningMM);
   const numberOfBars = numberOfOpenings - 1;
-  const widthOfTheScreenMM = ( parseFloat(numberOfOpenings) * parseFloat(coarseScreenOpeningMM) ) + ( parseFloat(numberOfBars) * parseFloat(widthOfEachBarMM) );
+  const widthOfTheScreenMM = ( parseFloat(numberOfOpenings) * parseFloat(SBROpeningMM) ) + ( parseFloat(numberOfBars) * parseFloat(widthOfEachBarMM) );
   const totalWidthOfChannelMM = parseFloat(widthOfTheScreenMM) + ( 2 * widthOfEachSideWallMM );
   const computedLengthOfTheScreenChannelM = 2 * ( 5 * verticalWidthOfOpeningM ) + ( ( parseFloat(depthOfWaterInScreenM) + parseFloat(freeBoardM) ) * ( 1 / Math.tan(angleOfInclinationWithTheHorizontalRad)));
   const approachVelocityInTheChannelMPerSec = parseFloat(peakFlowM3PerSec) / ( parseFloat(widthOfTheScreenMM) * parseFloat(depthOfWaterInScreenM) * 0.001 );
-  const computedVelocityThroughTheScreenMPerSec = parseFloat(peakFlowM3PerSec) / ( depthOfWaterInScreenM * coarseScreenOpeningMM * numberOfOpenings * 0.001);
+  const computedVelocityThroughTheScreenMPerSec = parseFloat(peakFlowM3PerSec) / ( depthOfWaterInScreenM * SBROpeningMM * numberOfOpenings * 0.001);
   const headLossWithoutCloggingM = 0.0729 * ( computedVelocityThroughTheScreenMPerSec**2 - approachVelocityInTheChannelMPerSec**2 );
   const velocityForHalfCloggedScreenMPerSec = 2 * computedVelocityThroughTheScreenMPerSec;
   const headLossWithHalfCloggingM = 0.0729 * ( velocityForHalfCloggedScreenMPerSec**2 - approachVelocityInTheChannelMPerSec**2 );
@@ -35,7 +35,7 @@ export const calculateCoarseScreenDesign = (inputs) => {
     peakFlowM3PerSec: peakFlowM3PerSec.toFixed(3),
     minFlowFactor,
     minFlowM3PerSec: minFlowM3PerSec.toFixed(3),
-    coarseScreenOpeningMM,
+    SBROpeningMM,
     depthOfWaterInScreenM,
     velocityThroughScreenMPerSec,
     areaOfTheScreenM2: areaOfTheScreenM2.toFixed(3),

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import PeakFactor from '../cpheeo/PeakFactor';
 
-const CoarseScreenForm = ({ onCalculate }) => {
+const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
     averageFlowMLD: '',
     peakFactor: '',
     minFlowFactor: '',
-    coarseScreenOpeningMM: '',
+    SBROpeningMM: '',
     depthOfWaterInScreenM: '',
     velocityThroughScreenMPerSec: '',
     angleOfInclinationWithTheHorizontalDeg: '',
@@ -34,8 +34,8 @@ const CoarseScreenForm = ({ onCalculate }) => {
     if (inputs.minFlowFactor && inputs.minFlowFactor <= 0) {
       errors.minFlowFactor = 'Minimum Flow Factor must be greater than 0';
     }
-    if (inputs.coarseScreenOpeningMM && inputs.coarseScreenOpeningMM <= 0) {
-      errors.coarseScreenOpeningMM = 'Coarse Screen Opening must be greater than 0';
+    if (inputs.SBROpeningMM && inputs.SBROpeningMM <= 0) {
+      errors.SBROpeningMM = 'Coarse Screen Opening must be greater than 0';
     }
     if (inputs.depthOfWaterInScreenM && inputs.depthOfWaterInScreenM <= 0) {
       errors.depthOfWaterInScreenM = 'Depth Of Water In Screen must be greater than 0';
@@ -133,12 +133,12 @@ const CoarseScreenForm = ({ onCalculate }) => {
           <TextField
             fullWidth
             label="Coarse Screen Opening (mm)"
-            name="coarseScreenOpeningMM"
+            name="SBROpeningMM"
             type="number"
-            value={inputs.coarseScreenOpeningMM}
+            value={inputs.SBROpeningMM}
             onChange={handleChange}
-            error={!!errors.coarseScreenOpeningMM}
-            helperText={errors.coarseScreenOpeningMM}
+            error={!!errors.SBROpeningMM}
+            helperText={errors.SBROpeningMM}
             sx={{
               '& .MuiInputBase-input': {
                 textAlign: 'center'
@@ -265,4 +265,4 @@ const CoarseScreenForm = ({ onCalculate }) => {
   );
 };
 
-export default CoarseScreenForm;
+export default SBRForm;
