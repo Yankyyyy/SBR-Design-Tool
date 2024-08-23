@@ -1,6 +1,36 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
+import { styled } from '@mui/system';
 import PeakFactor from '../cpheeo/PeakFactor';
+import { Calculate } from '@mui/icons-material';
+
+
+const AnimatedTextField = styled(TextField)(({ theme }) => ({
+  transition: 'transform 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+  '& .MuiInputBase-input': {
+    textAlign: 'center',
+  },
+}));
+
+const AnimatedFormControl = styled(FormControl)(({ theme }) => ({
+  transition: 'transform 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+}));
+
+const AnimatedButton = styled(Button)(({ theme }) => ({
+  background: 'linear-gradient(45deg, #172aff 30%, #179eff 90%)',
+  color: 'white',
+  transition: 'transform 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.1)',
+    background: 'linear-gradient(45deg, #179eff 30%, #172aff 90%)',
+  },
+}));
 
 const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
@@ -17,6 +47,7 @@ const SBRForm = ({ onCalculate }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,10 +94,16 @@ const SBRForm = ({ onCalculate }) => {
     const validationErrors = validateInputs(inputs);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setSnackbarOpen(true);
     } else {
       setErrors({});
       onCalculate(inputs);
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -76,7 +113,7 @@ const SBRForm = ({ onCalculate }) => {
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             required
             fullWidth
             label="Average Flow (MLD)"
@@ -94,7 +131,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required>
+          <AnimatedFormControl fullWidth required>
             <InputLabel>Peak Factor</InputLabel>
             <Select
               label="Peak Factor"
@@ -108,10 +145,10 @@ const SBRForm = ({ onCalculate }) => {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             required
             fullWidth
             label="Minimum Flow Factor"
@@ -130,7 +167,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Coarse Screen Opening (mm)"
             name="SBROpeningMM"
@@ -148,7 +185,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Depth Of Water In Screen (m)"
             name="depthOfWaterInScreenM"
@@ -166,7 +203,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Velocity Through Screen (m/sec)"
             name="velocityThroughScreenMPerSec"
@@ -184,9 +221,9 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
-            label="Angle Of Inclination With The Horizontal (deg)"
+            label="Angle Of Inclination (deg)"
             name="angleOfInclinationWithTheHorizontalDeg"
             type="number"
             value={inputs.angleOfInclinationWithTheHorizontalDeg}
@@ -202,7 +239,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Free Board (m)"
             name="freeBoardM"
@@ -220,7 +257,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Width Of Each Bar (mm)"
             name="widthOfEachBarMM"
@@ -238,7 +275,7 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <AnimatedTextField
             fullWidth
             label="Width Of Each Side Wall (mm)"
             name="widthOfEachSideWallMM"
@@ -257,10 +294,21 @@ const SBRForm = ({ onCalculate }) => {
         </Grid>
       </Grid>
       <Typography variant="h4" align="center" gutterBottom>
-        <Button type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+        <AnimatedButton type="submit" variant="contained" sx={{ mt: 3 }} startIcon={<Calculate />}>
           Calculate
-        </Button>
+        </AnimatedButton>
       </Typography>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={Object.keys(errors).length > 0 ? 'error' : 'success'}>
+          {Object.keys(errors).length > 0 ? 'Please fix the errors in the form!' : 'Calculation successful!'}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
