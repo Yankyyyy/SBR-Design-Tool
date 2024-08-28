@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 import PeakFactor from '../cpheeo/PeakFactor';
+import SBRProcessParameters from '../cpheeo/SBRProcessParameters';
 import { Calculate } from '@mui/icons-material';
 
 
@@ -34,9 +35,10 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
 
 const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
-    averageFlowMLD: '',
+    inflowFlowMLD: '',
     peakFactor: '',
-    minFlowFactor: '',
+    temperatureC: '',
+    reactorMixedLiquorConcentrationMGPerL: '',
     SBROpeningMM: '',
     depthOfWaterInScreenM: '',
     velocityThroughScreenMPerSec: '',
@@ -59,11 +61,14 @@ const SBRForm = ({ onCalculate }) => {
 
   const validateInputs = (inputs) => {
     const errors = {};
-    if (inputs.averageFlowMLD && inputs.averageFlowMLD <= 0) {
-      errors.averageFlowMLD = 'Average Flow must be greater than 0';
+    if (inputs.inflowFlowMLD && inputs.inflowFlowMLD <= 0) {
+      errors.inflowFlowMLD = 'Inflow Flow must be greater than 0';
     }
-    if (inputs.minFlowFactor && inputs.minFlowFactor <= 0) {
-      errors.minFlowFactor = 'Minimum Flow Factor must be greater than 0';
+    if (inputs.temperatureC && inputs.temperatureC <= 0) {
+      errors.temperatureC = 'Temperature must be greater than 0';
+    }
+    if (inputs.reactorMixedLiquorConcentrationMGPerL && inputs.reactorMixedLiquorConcentrationMGPerL <= 0) {
+      errors.reactorMixedLiquorConcentrationMGPerL = 'Reactor mixed liquor concentration must be greater than 0';
     }
     if (inputs.SBROpeningMM && inputs.SBROpeningMM <= 0) {
       errors.SBROpeningMM = 'Coarse Screen Opening must be greater than 0';
@@ -116,13 +121,13 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="Average Flow (MLD)"
-            name="averageFlowMLD"
+            label="Inflow Flow (MLD)"
+            name="inflowFlowMLD"
             type="number"
-            value={inputs.averageFlowMLD}
+            value={inputs.inflowFlowMLD}
             onChange={handleChange}
-            error={!!errors.averageFlowMLD}
-            helperText={errors.averageFlowMLD}
+            error={!!errors.inflowFlowMLD}
+            helperText={errors.inflowFlowMLD}
             sx={{
               '& .MuiInputBase-input': {
                 textAlign: 'center'
@@ -151,13 +156,13 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="Minimum Flow Factor"
-            name="minFlowFactor"
+            label="Temperature"
+            name="temperatureC"
             type="number"
-            value={inputs.minFlowFactor}
+            value={inputs.temperatureC}
             onChange={handleChange}
-            error={!!errors.minFlowFactor}
-            helperText={errors.minFlowFactor}
+            error={!!errors.temperatureC}
+            helperText={errors.temperatureC}
             sx={{
               '& .MuiInputBase-input': {
                 textAlign: 'center'
@@ -165,6 +170,24 @@ const SBRForm = ({ onCalculate }) => {
             }}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
+        </Grid>
+        
+        <Grid item xs={12} sm={6}>
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Reactor mixed liquor concentration (mg/l)</InputLabel>
+            <Select
+              label="Reactor mixed liquor concentration (mg/l)"
+              name="reactorMixedLiquorConcentrationMGPerL"
+              value={inputs.reactorMixedLiquorConcentrationMGPerL}
+              onChange={handleChange}
+            >
+              {SBRProcessParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.intermittentFlowandIntermittentDecant}>
+                  {factor.parameters} : {factor.intermittentFlowandIntermittentDecant}
+                </MenuItem>
+              ))}
+            </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedTextField
