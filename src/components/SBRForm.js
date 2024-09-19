@@ -36,16 +36,60 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
 const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
     inflowFlowMLD: '',
-    peakFactor: '',
+    peakfactor: '',
     temperatureC: '',
-    reactorMixedLiquorConcentrationMGPerL: '',
-    SBROpeningMM: '',
-    depthOfWaterInScreenM: '',
-    velocityThroughScreenMPerSec: '',
-    angleOfInclinationWithTheHorizontalDeg: '',
-    freeBoardM: '',
-    widthOfEachBarMM: '',
-    widthOfEachSideWallMM: ''
+    reactorMixedLiquorConcentrationmgperl: '',
+    influentBODmgperl: '',
+    sBODmgperl: '',
+    CODmgperl: '',
+    sCODmgperl: '',
+    rbCODmgperl: '',
+    TSSmgperl: '',
+    VSSmgperl: '',
+    numberOfTanks: '',
+    totalLiquidDepthm: '',
+    decantDepthPercentage: '',
+    SVImgperl: '',
+    minimumDOConcentrationmgperl: '',
+    bCODBODRatio: '',
+    effluentTSSmgperl: '',
+    effluentBODmgperl: '',
+    effluentCODmgperl: '',
+    µm: '',
+    Ks: '',
+    kd: '',
+    fd: '',
+    Y: '',
+    Ɵµm: '',
+    ƟKs: '',
+    Ɵkd: '',
+    aerationTimehrs: '',
+    settlingTimehrs: '',
+    decantationTimehrs: '',
+    idleTimehrs: '',
+    liquidAboveSludgePercentage: '',
+    freeBoardm: '',
+    lengthToWidthRatio: '',
+    solidsRetentionTimeday: '',
+    higherOxygenFactor: '',
+    blowerOutletPressurebar: '',
+    oxygenNeededPerKgBODkgO2perkgBOD: '',
+    SOTRDepthFunction: '',
+    AOTRSOTRRatio: '',
+    diffusersDepthm: '',
+    specificWeightOfWaterKNperm3: '',
+    designTemperatureC: '',
+    oxygenContentInAirKgperm3: '',
+    oxygenContentInAirPercentage: '',
+    diffuserFoulingFactor: '',
+    oxygenTransferRatio: '',
+    DOSaturationRatio: '',
+    siteElevationm: '',
+    DOSaturationToCleanWatermgperl: '',
+    DOConcentrationDesignTempmgperl: '',
+    standardAtmosphericPressureKNperm3: '',
+    oxygenConcentrationLeavingTank: '',
+    fineBubbleDiffusersEfficiency: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -61,35 +105,48 @@ const SBRForm = ({ onCalculate }) => {
 
   const validateInputs = (inputs) => {
     const errors = {};
-    if (inputs.inflowFlowMLD && inputs.inflowFlowMLD <= 0) {
-      errors.inflowFlowMLD = 'Inflow Flow must be greater than 0';
+    const positiveFields = [
+      'inflowFlowMLD', 'temperatureC', 'reactorMixedLiquorConcentrationmgperl',
+      'influentBODmgperl', 'sBODmgperl', 'CODmgperl', 'sCODmgperl', 'rbCODmgperl',
+      'TSSmgperl', 'VSSmgperl', 'numberOfTanks', 'totalLiquidDepthm',
+      'SVImgperl', 'minimumDOConcentrationmgperl', 'effluentTSSmgperl',
+      'effluentBODmgperl', 'effluentCODmgperl', 'µm', 'Ks', 'kd', 'Y',
+      'aerationTimehrs', 'settlingTimehrs', 'decantationTimehrs', 'idleTimehrs',
+      'freeBoardm', 'solidsRetentionTimeday', 'higherOxygenFactor',
+      'blowerOutletPressurebar', 'oxygenNeededPerKgBODkgO2perkgBOD',
+      'diffusersDepthm', 'specificWeightOfWaterKNperm3', 'designTemperatureC',
+      'oxygenContentInAirKgperm3', 'siteElevationm', 'DOSaturationToCleanWatermgperl',
+      'DOConcentrationDesignTempmgperl', 'standardAtmosphericPressureKNperm3',
+      'fineBubbleDiffusersEfficiency'
+    ];
+
+    positiveFields.forEach(field => {
+      if (inputs[field] && parseFloat(inputs[field]) <= 0) {
+        errors[field] = `${field} must be greater than 0`;
+      }
+    });
+
+    const percentageFields = [
+      'decantDepthPercentage', 'liquidAboveSludgePercentage',
+      'oxygenContentInAirPercentage'
+    ];
+
+    percentageFields.forEach(field => {
+      if (inputs[field] && (parseFloat(inputs[field]) < 0 || parseFloat(inputs[field]) > 100)) {
+        errors[field] = `${field} must be between 0 and 100`;
+      }
+    });
+
+    if (inputs.bCODBODRatio && (parseFloat(inputs.bCODBODRatio) < 0 || parseFloat(inputs.bCODBODRatio) > 1)) {
+      errors.bCODBODRatio = 'bCOD/BOD ratio must be between 0 and 1';
     }
-    if (inputs.temperatureC && inputs.temperatureC <= 0) {
-      errors.temperatureC = 'Temperature must be greater than 0';
+
+    if (inputs.fd && (parseFloat(inputs.fd) < 0 || parseFloat(inputs.fd) > 1)) {
+      errors.fd = 'fd must be between 0 and 1';
     }
-    if (inputs.reactorMixedLiquorConcentrationMGPerL && inputs.reactorMixedLiquorConcentrationMGPerL <= 0) {
-      errors.reactorMixedLiquorConcentrationMGPerL = 'Reactor mixed liquor concentration must be greater than 0';
-    }
-    if (inputs.SBROpeningMM && inputs.SBROpeningMM <= 0) {
-      errors.SBROpeningMM = 'Coarse Screen Opening must be greater than 0';
-    }
-    if (inputs.depthOfWaterInScreenM && inputs.depthOfWaterInScreenM <= 0) {
-      errors.depthOfWaterInScreenM = 'Depth Of Water In Screen must be greater than 0';
-    }
-    if (inputs.velocityThroughScreenMPerSec && inputs.velocityThroughScreenMPerSec <= 0) {
-      errors.velocityThroughScreenMPerSec = 'Velocity Through Screen must be greater than 0';
-    }
-    if (inputs.angleOfInclinationWithTheHorizontalDeg && inputs.angleOfInclinationWithTheHorizontalDeg <= 0) {
-      errors.angleOfInclinationWithTheHorizontalDeg = 'Angle Of Inclination With The Horizontal must be greater than 0';
-    }
-    if (inputs.freeBoardM && inputs.freeBoardM <= 0) {
-      errors.freeBoardM = 'Free Board must be greater than 0';
-    }
-    if (inputs.widthOfEachBarMM && inputs.widthOfEachBarMM <= 0) {
-      errors.widthOfEachBarMM = 'Width Of Each Bar must be greater than 0';
-    }
-    if (inputs.widthOfEachSideWallMM && inputs.widthOfEachSideWallMM <= 0) {
-      errors.widthOfEachSideWallMM = 'Width Of Each Side Wall must be greater than 0';
+
+    if (inputs.lengthToWidthRatio && parseFloat(inputs.lengthToWidthRatio) < 1) {
+      errors.lengthToWidthRatio = 'Length to width ratio must be 1 or greater';
     }
     return errors;
   };
@@ -128,11 +185,7 @@ const SBRForm = ({ onCalculate }) => {
             onChange={handleChange}
             error={!!errors.inflowFlowMLD}
             helperText={errors.inflowFlowMLD}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
+            InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -140,8 +193,8 @@ const SBRForm = ({ onCalculate }) => {
             <InputLabel>Peak Factor</InputLabel>
             <Select
               label="Peak Factor"
-              name="peakFactor"
-              value={inputs.peakFactor}
+              name="peakfactor"
+              value={inputs.peakfactor}
               onChange={handleChange}
             >
               {PeakFactor.map((factor) => (
@@ -156,29 +209,23 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="Temperature"
+            label="Temperature (°C)"
             name="temperatureC"
             type="number"
             value={inputs.temperatureC}
             onChange={handleChange}
             error={!!errors.temperatureC}
             helperText={errors.temperatureC}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
+            InputProps={{ inputProps: { step: 0.1 } }}
           />
         </Grid>
-        
         <Grid item xs={12} sm={6}>
           <AnimatedFormControl fullWidth required>
             <InputLabel>Reactor mixed liquor concentration (mg/l)</InputLabel>
             <Select
               label="Reactor mixed liquor concentration (mg/l)"
-              name="reactorMixedLiquorConcentrationMGPerL"
-              value={inputs.reactorMixedLiquorConcentrationMGPerL}
+              name="reactorMixedLiquorConcentrationmgperl"
+              value={inputs.reactorMixedLiquorConcentrationmgperl}
               onChange={handleChange}
             >
               {SBRProcessParameters.map((factor) => (
@@ -189,132 +236,27 @@ const SBRForm = ({ onCalculate }) => {
             </Select>
           </AnimatedFormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Coarse Screen Opening (mm)"
-            name="SBROpeningMM"
-            type="number"
-            value={inputs.SBROpeningMM}
-            onChange={handleChange}
-            error={!!errors.SBROpeningMM}
-            helperText={errors.SBROpeningMM}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Depth Of Water In Screen (m)"
-            name="depthOfWaterInScreenM"
-            type="number"
-            value={inputs.depthOfWaterInScreenM}
-            onChange={handleChange}
-            error={!!errors.depthOfWaterInScreenM}
-            helperText={errors.depthOfWaterInScreenM}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Velocity Through Screen (m/sec)"
-            name="velocityThroughScreenMPerSec"
-            type="number"
-            value={inputs.velocityThroughScreenMPerSec}
-            onChange={handleChange}
-            error={!!errors.velocityThroughScreenMPerSec}
-            helperText={errors.velocityThroughScreenMPerSec}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Angle Of Inclination (deg)"
-            name="angleOfInclinationWithTheHorizontalDeg"
-            type="number"
-            value={inputs.angleOfInclinationWithTheHorizontalDeg}
-            onChange={handleChange}
-            error={!!errors.angleOfInclinationWithTheHorizontalDeg}
-            helperText={errors.angleOfInclinationWithTheHorizontalDeg}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Free Board (m)"
-            name="freeBoardM"
-            type="number"
-            value={inputs.freeBoardM}
-            onChange={handleChange}
-            error={!!errors.freeBoardM}
-            helperText={errors.freeBoardM}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Width Of Each Bar (mm)"
-            name="widthOfEachBarMM"
-            type="number"
-            value={inputs.widthOfEachBarMM}
-            onChange={handleChange}
-            error={!!errors.widthOfEachBarMM}
-            helperText={errors.widthOfEachBarMM}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            fullWidth
-            label="Width Of Each Side Wall (mm)"
-            name="widthOfEachSideWallMM"
-            type="number"
-            value={inputs.widthOfEachSideWallMM}
-            onChange={handleChange}
-            error={!!errors.widthOfEachSideWallMM}
-            helperText={errors.widthOfEachSideWallMM}
-            sx={{
-              '& .MuiInputBase-input': {
-                textAlign: 'center'
-              }
-            }}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
+        {Object.entries(inputs).map(([key, value]) => {
+          if (!['inflowFlowMLD', 'peakfactor', 'temperatureC', 'reactorMixedLiquorConcentrationmgperl'].includes(key)) {
+            return (
+              <Grid item xs={12} sm={6} key={key}>
+                <AnimatedTextField
+                  required
+                  fullWidth
+                  label={key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
+                  name={key}
+                  type="number"
+                  value={value}
+                  onChange={handleChange}
+                  error={!!errors[key]}
+                  helperText={errors[key]}
+                  InputProps={{ inputProps: { step: 0.01 } }}
+                />
+              </Grid>
+            );
+          }
+          return null;
+        })}
       </Grid>
       <Typography variant="h4" align="center" gutterBottom>
         <AnimatedButton type="submit" variant="contained" sx={{ mt: 3 }} startIcon={<Calculate />}>
