@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
-import PeakFactor from '../cpheeo/PeakFactor';
+import peakFactor from '../cpheeo/peakFactor';
 import SBRProcessParameters from '../cpheeo/SBRProcessParameters';
 import { Calculate } from '@mui/icons-material';
 
@@ -35,8 +35,8 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
 
 const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
-    inflowFlowMLD: '',
-    peakfactor: '',
+    influentFlowMLD: '',
+    peakFactor: '',
     temperatureC: '',
     reactorMixedLiquorConcentrationmgperl: '',
     influentBODmgperl: '',
@@ -106,7 +106,7 @@ const SBRForm = ({ onCalculate }) => {
   const validateInputs = (inputs) => {
     const errors = {};
     const positiveFields = [
-      'inflowFlowMLD', 'temperatureC', 'reactorMixedLiquorConcentrationmgperl',
+      'influentFlowMLD', 'temperatureC', 'reactorMixedLiquorConcentrationmgperl',
       'influentBODmgperl', 'sBODmgperl', 'CODmgperl', 'sCODmgperl', 'rbCODmgperl',
       'TSSmgperl', 'VSSmgperl', 'numberOfTanks', 'totalLiquidDepthm',
       'SVImgperl', 'minimumDOConcentrationmgperl', 'effluentTSSmgperl',
@@ -179,12 +179,12 @@ const SBRForm = ({ onCalculate }) => {
             required
             fullWidth
             label="Inflow Flow (MLD)"
-            name="inflowFlowMLD"
+            name="influentFlowMLD"
             type="number"
-            value={inputs.inflowFlowMLD}
+            value={inputs.influentFlowMLD}
             onChange={handleChange}
-            error={!!errors.inflowFlowMLD}
-            helperText={errors.inflowFlowMLD}
+            error={!!errors.influentFlowMLD}
+            helperText={errors.influentFlowMLD}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
@@ -193,11 +193,11 @@ const SBRForm = ({ onCalculate }) => {
             <InputLabel>Peak Factor</InputLabel>
             <Select
               label="Peak Factor"
-              name="peakfactor"
-              value={inputs.peakfactor}
+              name="peakFactor"
+              value={inputs.peakFactor}
               onChange={handleChange}
             >
-              {PeakFactor.map((factor) => (
+              {peakFactor.map((factor) => (
                 <MenuItem key={factor.id} value={factor.value}>
                   {factor.population} : {factor.value}
                 </MenuItem>
@@ -229,8 +229,8 @@ const SBRForm = ({ onCalculate }) => {
               onChange={handleChange}
             >
               {SBRProcessParameters.map((factor) => (
-                <MenuItem key={factor.id} value={factor.intermittentFlowandIntermittentDecant}>
-                  {factor.parameters} : {factor.intermittentFlowandIntermittentDecant}
+                <MenuItem key={factor.id} value={factor.continuousFlowandIntermittentDecant}>
+                  {factor.parameters} : {factor.continuousFlowandIntermittentDecant}
                 </MenuItem>
               ))}
             </Select>

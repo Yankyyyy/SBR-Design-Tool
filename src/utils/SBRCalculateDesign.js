@@ -1,61 +1,129 @@
+import { Fraction } from "fraction.js";
+
 function degreesToRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
+function floatToFraction(float) {
+  return Fraction(float).limit_denominator();
+}
 
 export const calculateSBRDesign = (inputs) => {
-  const { averageFlowMLD, peakFactor, minFlowFactor, SBROpeningMM, depthOfWaterInScreenM, velocityThroughScreenMPerSec,
-    angleOfInclinationWithTheHorizontalDeg, freeBoardM, widthOfEachBarMM, widthOfEachSideWallMM } = inputs;
-  const angleOfInclinationWithTheHorizontalRad = degreesToRadians(angleOfInclinationWithTheHorizontalDeg)
-  const averageFlowM3PerSec = ( averageFlowMLD * 1000 ) / ( 24 * 60 * 60 );
-  const peakFlowMLD = parseFloat(averageFlowMLD) * parseFloat(peakFactor);
-  const peakFlowM3PerSec = parseFloat(averageFlowM3PerSec) * parseFloat(peakFactor);
-  const minFlowM3PerSec = parseFloat(averageFlowM3PerSec) * parseFloat(minFlowFactor);
-  const areaOfTheScreenM2 = parseFloat(peakFlowM3PerSec) / parseFloat(velocityThroughScreenMPerSec);
-  const verticalAreaOfTheScreenM2 = parseFloat(areaOfTheScreenM2) * Math.sin( angleOfInclinationWithTheHorizontalRad );
-  const lengthOfTheScreenM = ( parseFloat(depthOfWaterInScreenM) + parseFloat(freeBoardM) ) / Math.sin(angleOfInclinationWithTheHorizontalRad);
-  const verticalWidthOfOpeningM = parseFloat(verticalAreaOfTheScreenM2) / parseFloat(depthOfWaterInScreenM);
-  const inclinedWidthOfTheOpeningM = parseFloat(areaOfTheScreenM2) / parseFloat(depthOfWaterInScreenM);
-  const numberOfOpenings = Math.ceil(( verticalWidthOfOpeningM * 1000 ) / SBROpeningMM);
-  const numberOfBars = numberOfOpenings - 1;
-  const widthOfTheScreenMM = ( parseFloat(numberOfOpenings) * parseFloat(SBROpeningMM) ) + ( parseFloat(numberOfBars) * parseFloat(widthOfEachBarMM) );
-  const totalWidthOfChannelMM = parseFloat(widthOfTheScreenMM) + ( 2 * widthOfEachSideWallMM );
-  const computedLengthOfTheScreenChannelM = 2 * ( 5 * verticalWidthOfOpeningM ) + ( ( parseFloat(depthOfWaterInScreenM) + parseFloat(freeBoardM) ) * ( 1 / Math.tan(angleOfInclinationWithTheHorizontalRad)));
-  const approachVelocityInTheChannelMPerSec = parseFloat(peakFlowM3PerSec) / ( parseFloat(widthOfTheScreenMM) * parseFloat(depthOfWaterInScreenM) * 0.001 );
-  const computedVelocityThroughTheScreenMPerSec = parseFloat(peakFlowM3PerSec) / ( depthOfWaterInScreenM * SBROpeningMM * numberOfOpenings * 0.001);
-  const headLossWithoutCloggingM = 0.0729 * ( computedVelocityThroughTheScreenMPerSec**2 - approachVelocityInTheChannelMPerSec**2 );
-  const velocityForHalfCloggedScreenMPerSec = 2 * computedVelocityThroughTheScreenMPerSec;
-  const headLossWithHalfCloggingM = 0.0729 * ( velocityForHalfCloggedScreenMPerSec**2 - approachVelocityInTheChannelMPerSec**2 );
+  const { influentFlowMLD, peakFactor, temperatureC, reactorMixedLiquorConcentrationmgperl, influentBODmgperl, sBODmgperl, CODmgperl, sCODmgperl, 
+    rbCODmgperl, TSSmgperl, VSSmgperl, numberOfTanks, totalLiquidDepthm, decantDepthPercentage, SVImgperl, minimumDOConcentrationmgperl, bCODBODRatio, 
+    effluentTSSmgperl, effluentBODmgperl, effluentCODmgperl, µm, Ks, kd, fd, Y, Ɵµm, ƟKs, Ɵkd, aerationTimehrs, settlingTimehrs, decantationTimehrs, 
+    idleTimehrs, liquidAboveSludgePercentage, freeBoardm, lengthToWidthRatio, solidsRetentionTimeday, higherOxygenFactor, blowerOutletPressurebar, 
+    oxygenNeededPerKgBODkgO2perkgBOD, SOTRDepthFunction, AOTRSOTRRatio, diffusersDepthm, specificWeightOfWaterKNperm3, designTemperatureC, 
+    oxygenContentInAirKgperm3, oxygenContentInAirPercentage, diffuserFoulingFactor, oxygenTransferRatio, DOSaturationRatio, siteElevationm, 
+    DOSaturationToCleanWatermgperl, DOConcentrationDesignTempmgperl, standardAtmosphericPressureKNperm3, oxygenConcentrationLeavingTank, 
+    fineBubbleDiffusersEfficiency } = inputs;
+  
+  const lenToWidthRatio = floatToFraction(parseFloat(lengthToWidthRatio));
+  const influentFlowm3perday = influentFlowMLD * 1000;
+  const influentFlowm3persec = influentFlowm3perday / ( 24 * 60 * 60 );
+  const peakFlowMLD = parseFloat(influentFlowMLD) * parseFloat(peakFactor);
+  const peakFlowm3perday = parseFloat(peakFlowMLD) * 1000;
+  const peakFlowm3persec = parseFloat(peakFlowm3perday) / ( 24 * 60 * 60 );
+  const estimatedEffluentCODmgperl = parseFloat(CODmgperl) - ( parseFloat(bCODBODRatio) * parseFloat(influentBODmgperl) * ((parseFloat(influentBODmgperl) - parseFloat(effluentBODmgperl)) / parseFloat(influentBODmgperl)) );
+  const bCODmgperl = parseFloat(bCODBODRatio) * parseFloat(influentBODmgperl);
+  const nbVSSConcentrationmgperl = ( parseFloat(bCODBODRatio) * (parseFloat(influentBODmgperl) - parseFloat(sBODmgperl)) ) / ( parseFloat(CODmgperl) - parseFloat(sCODmgperl) ) ;
+  const nbVSSmgperl = ( 1 - parseFloat(nbVSSConcentrationmgperl) ) * parseFloat(VSSmgperl) ;
+  const iTSSmgperl = parseFloat(TSSmgperl) - parseFloat(VSSmgperl);
+  const fillPeriodhrs = parseFloat(aerationTimehrs) + parseFloat(settlingTimehrs) + parseFloat(decantationTimehrs) + parseFloat(idleTimehrs);
+  const totalCycletime = parseFloat(numberOfTanks) * parseFloat(fillPeriodhrs);
+  const numberOfCyclesPerTankPerDay = 24 / totalCycletime;
+  const totalNumberOfCyclesPerDay = parseFloat(numberOfTanks) * parseFloat(numberOfCyclesPerTankPerDay);
+  const fillVolumePerCycle = parseFloat(peakFlowm3perday) / parseFloat(totalNumberOfCyclesPerDay);
+  const settledMLSSConcentrationmgperl = (1000 * 1000) / SVImgperl;
+  const ratioOfVsVtwithextraliquidAboveSludge = ( parseFloat(reactorMixedLiquorConcentrationmgperl) / parseFloat(settledMLSSConcentrationmgperl) ) * ( 1 + (liquidAboveSludgePercentage / 100) );
+  const fillFraction = 1 - parseFloat(ratioOfVsVtwithextraliquidAboveSludge);
+  const decantDepthm = ( parseFloat(decantDepthPercentage) / 100 ) * parseFloat(totalLiquidDepthm);
+  const totalVolumePerTankm3 = parseFloat(fillVolumePerCycle) / ( parseFloat(decantDepthPercentage) / 100 );
+  const overallTimehrs = ( numberOfTanks * totalVolumePerTankm3 * 24 ) / parseFloat(peakFlowm3perday);
+  const totalTankDepthm = parseFloat(totalLiquidDepthm) + parseFloat(freeBoardm);
+  const areaRequiredm2 = parseFloat(totalVolumePerTankm3) / parseFloat(totalTankDepthm);
+  const lengthOfTheTankm = Math.ceil( 10 * (parseFloat(lenToWidthRatio.numerator) * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) ))) / 10;
+  const widthOfTheTankm = Math.ceil( 10 * (parseFloat(lenToWidthRatio.denominator) * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) ))) / 10;
+  const adoptedVolumeOfOneTank = parseFloat(lengthOfTheTankm) * parseFloat(widthOfTheTankm) * parseFloat(totalLiquidDepthm);
 
   return {
-    averageFlowMLD,
-    averageFlowM3PerSec: averageFlowM3PerSec.toFixed(3),
+    influentFlowMLD,
+    influentFlowm3perday: influentFlowm3perday.toFixed(3),
+    influentFlowm3persec: influentFlowm3persec.toFixed(3),
     peakFactor,
     peakFlowMLD,
-    peakFlowM3PerSec: peakFlowM3PerSec.toFixed(3),
-    minFlowFactor,
-    minFlowM3PerSec: minFlowM3PerSec.toFixed(3),
-    SBROpeningMM,
-    depthOfWaterInScreenM,
-    velocityThroughScreenMPerSec,
-    areaOfTheScreenM2: areaOfTheScreenM2.toFixed(3),
-    angleOfInclinationWithTheHorizontalDeg,
-    verticalAreaOfTheScreenM2: verticalAreaOfTheScreenM2.toFixed(3),
-    freeBoardM,
-    lengthOfTheScreenM: lengthOfTheScreenM.toFixed(3),
-    verticalWidthOfOpeningM: verticalWidthOfOpeningM.toFixed(3),
-    inclinedWidthOfTheOpeningM: inclinedWidthOfTheOpeningM.toFixed(3),
-    numberOfOpenings,
-    numberOfBars,
-    widthOfEachBarMM,
-    widthOfTheScreenMM: widthOfTheScreenMM.toFixed(3),
-    widthOfEachSideWallMM,
-    totalWidthOfChannelMM: totalWidthOfChannelMM.toFixed(3),
-    computedLengthOfTheScreenChannelM: computedLengthOfTheScreenChannelM.toFixed(3),
-    approachVelocityInTheChannelMPerSec: approachVelocityInTheChannelMPerSec.toFixed(3),
-    computedVelocityThroughTheScreenMPerSec: computedVelocityThroughTheScreenMPerSec.toFixed(3),
-    headLossWithoutCloggingM: headLossWithoutCloggingM.toFixed(3),
-    velocityForHalfCloggedScreenMPerSec: velocityForHalfCloggedScreenMPerSec.toFixed(3),
-    headLossWithHalfCloggingM: headLossWithHalfCloggingM.toFixed(3)
+    peakFlowm3perday: peakFlowm3perday.toFixed(3),
+    peakFlowm3persec: peakFlowm3persec.toFixed(3),
+    temperatureC,
+    reactorMixedLiquorConcentrationmgperl,
+    influentBODmgperl,
+    sBODmgperl,
+    CODmgperl,
+    sCODmgperl,
+    rbCODmgperl,
+    TSSmgperl,
+    VSSmgperl,
+    numberOfTanks,
+    totalLiquidDepthm,
+    decantDepthPercentage,
+    SVImgperl,
+    minimumDOConcentrationmgperl,
+    bCODBODRatio,
+    effluentTSSmgperl,
+    effluentBODmgperl,
+    effluentCODmgperl,
+    estimatedEffluentCODmgperl: estimatedEffluentCODmgperl.toFixed(3),
+    µm,
+    Ks,
+    kd,
+    fd,
+    Y,
+    Ɵµm,
+    ƟKs,
+    Ɵkd,
+    bCODmgperl: bCODmgperl.toFixed(3),
+    nbVSSmgperl: nbVSSmgperl.toFixed(3),
+    iTSSmgperl: iTSSmgperl.toFixed(3),
+    aerationTimehrs,
+    settlingTimehrs,
+    decantationTimehrs,
+    idleTimehrs,
+    fillPeriodhrs,
+    totalCycletime,
+    numberOfCyclesPerTankPerDay,
+    totalNumberOfCyclesPerDay,
+    fillVolumePerCycle,
+    settledMLSSConcentrationmgperl: settledMLSSConcentrationmgperl.toFixed(3),
+    liquidAboveSludgePercentage,
+    ratioOfVsVtwithextraliquidAboveSludge: ratioOfVsVtwithextraliquidAboveSludge.toFixed(3),
+    fillFraction: fillFraction.toFixed(3),
+    decantDepthm,
+    totalVolumePerTankm3,
+    overallTimehrs,
+    freeBoardm,
+    lengthToWidthRatio,
+    lengthOfTheTankm,
+    widthOfTheTankm,
+    adoptedVolumeOfOneTank: adoptedVolumeOfOneTank.toFixed(3),
+    solidsRetentionTimeday,
+    higherOxygenFactor,
+    blowerOutletPressurebar,
+    oxygenNeededPerKgBODkgO2perkgBOD,
+    SOTRDepthFunction,
+    AOTRSOTRRatio,
+    diffusersDepthm,
+    specificWeightOfWaterKNperm3,
+    designTemperatureC,
+    oxygenContentInAirKgperm3,
+    oxygenContentInAirPercentage,
+    diffuserFoulingFactor,
+    oxygenTransferRatio,
+    DOSaturationRatio,
+    siteElevationm,
+    DOSaturationToCleanWatermgperl,
+    DOConcentrationDesignTempmgperl,
+    standardAtmosphericPressureKNperm3,
+    oxygenConcentrationLeavingTank,
+    fineBubbleDiffusersEfficiency
   };
 };

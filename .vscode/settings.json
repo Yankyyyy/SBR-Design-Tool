@@ -1,0 +1,35 @@
+{
+    "cSpell.words": [
+        "AOTR",
+        "AOTRSOTR",
+        "Boardm",
+        "CODBOD",
+        "Concentrationmgperl",
+        "Depthm",
+        "Dmgperl",
+        "Elevationm",
+        "Imgperl",
+        "Kgperm",
+        "Ɵkdm",
+        "peakfactor",
+        "perkg",
+        "Pressurebar",
+        "Smgperl",
+        "SOTR",
+        "Tempmgperl",
+        "Timeday",
+        "Timehrs",
+        "Watermgperl"
+    ],
+    "cSpell.ignoreWords": [
+        "Cycletime",
+        "Flowm",
+        "Indexmlperg",
+        "Periodhrs",
+        "Requiredm",
+        "Tankm",
+        "Vtwithextraliquid",
+        "perday",
+        "persec"
+    ]
+}
