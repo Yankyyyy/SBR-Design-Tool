@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
-import peakFactor from '../cpheeo/peakFactor';
+import PeakFactor from '../cpheeo/PeakFactor';
 import SBRProcessParameters from '../cpheeo/SBRProcessParameters';
 import { Calculate } from '@mui/icons-material';
 
@@ -197,7 +197,7 @@ const SBRForm = ({ onCalculate }) => {
               value={inputs.peakFactor}
               onChange={handleChange}
             >
-              {peakFactor.map((factor) => (
+              {PeakFactor.map((factor) => (
                 <MenuItem key={factor.id} value={factor.value}>
                   {factor.population} : {factor.value}
                 </MenuItem>
