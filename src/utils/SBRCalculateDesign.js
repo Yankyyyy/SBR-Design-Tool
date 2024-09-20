@@ -1,8 +1,4 @@
-import { Fraction } from "fraction.js";
-
-function degreesToRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
+import Fraction from "fraction.js";
 
 function floatToFraction(float) {
   return Fraction(float).limit_denominator();
