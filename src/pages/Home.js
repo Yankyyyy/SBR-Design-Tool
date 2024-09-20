@@ -108,7 +108,7 @@ const Home = () => {
               }
             />
             <Container>
-              <Box sx={{ margin: 4, textAlign: 'center' }}>
+              <Box sx={{ margin: 8, textAlign: 'center' }}>
                 <img src={sbrflow} alt="SBR Flow Chart" style={{ width: '100%', height: 'auto' }} />
               </Box>
             </Container>
