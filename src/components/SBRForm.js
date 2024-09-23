@@ -79,7 +79,6 @@ const SBRForm = ({ onCalculate }) => {
     AOTRSOTRRatio: '',
     diffusersDepthm: '',
     specificWeightOfWaterKNperm3: '',
-    designTemperatureC: '',
     oxygenContentInAirKgperm3: '',
     oxygenContentInAirPercentage: '',
     diffuserFoulingFactor: '',
@@ -115,14 +114,14 @@ const SBRForm = ({ onCalculate }) => {
       'aerationTimehrs', 'settlingTimehrs', 'decantationTimehrs', 'idleTimehrs',
       'freeBoardm', 'higherOxygenFactor',
       'blowerOutletPressurebar', 'oxygenNeededPerKgBODkgO2perkgBOD',
-      'diffusersDepthm', 'specificWeightOfWaterKNperm3', 'designTemperatureC',
+      'diffusersDepthm', 'specificWeightOfWaterKNperm3',
       'oxygenContentInAirKgperm3', 'siteElevationm', 'DOSaturationToCleanWatermgperl',
       'DOConcentrationDesignTempmgperl', 'standardAtmosphericPressureKNperm3',
       'fineBubbleDiffusersEfficiency'
     ];
 
     positiveFields.forEach(field => {
-      if (inputs[field] && parseFloat(inputs[field]) <= 0) {
+      if (inputs[field] && parseFloat(inputs[field]) < 0) {
         errors[field] = `${field} must be greater than 0`;
       }
     });
@@ -138,8 +137,8 @@ const SBRForm = ({ onCalculate }) => {
       }
     });
 
-    if (inputs.bCODBODRatio && (parseFloat(inputs.bCODBODRatio) < 0 || parseFloat(inputs.bCODBODRatio) > 1)) {
-      errors.bCODBODRatio = 'bCOD/BOD ratio must be between 0 and 1';
+    if (inputs.bCODBODRatio && (parseFloat(inputs.bCODBODRatio) < 0)) {
+      errors.bCODBODRatio = 'bCOD/BOD ratio must be greater than 0';
     }
 
     if (inputs.lengthToWidthRatio && parseFloat(inputs.lengthToWidthRatio) < 1) {
@@ -764,20 +763,6 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="Design Temperature (°C)"
-            name="designTemperatureC"
-            type="number"
-            value={inputs.designTemperatureC}
-            onChange={handleChange}
-            error={!!errors.designTemperatureC}
-            helperText={errors.designTemperatureC}
-            InputProps={{ inputProps: { step: 0.1 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
             label="Oxygen Content in Air (kg/m3)"
             name="oxygenContentInAirKgperm3"
             type="number"
@@ -914,7 +899,7 @@ const SBRForm = ({ onCalculate }) => {
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <AnimatedTextField
             required
             fullWidth

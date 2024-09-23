@@ -1,7 +1,50 @@
-import Fraction from "fraction.js";
+function floatToFraction(number) {
+  // Handle edge case if the number is an integer
+  if (Number.isInteger(number)) {
+    return `${number}/1`;
+  }
 
-function floatToFraction(float) {
-  return Fraction(float).limit_denominator();
+  // Get the absolute value and sign of the number
+  const sign = number < 0 ? -1 : 1;
+  number = Math.abs(number);
+
+  // Get decimal places
+  const precision = 1e9; // Arbitrary large number for precision
+  const gcd = (a, b) => (b ? gcd(b, a % b) : a); // Greatest Common Divisor function
+
+  const temp_numerator = Math.round(number * precision);
+  const temp_denominator = precision;
+
+  // Reduce the fraction by dividing by the GCD
+  const divisor = gcd(temp_numerator, temp_denominator);
+
+  const numerator = sign * temp_numerator / divisor;
+  const denominator = temp_denominator / divisor;
+
+  return { numerator, denominator };
+}
+
+function solveQuadratic(a, b, c) {
+  const discriminant = b * b - 4 * a * c;
+
+  if (discriminant > 0) {
+    // Two real solutions
+    const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+    const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+    if(x1 > 0){
+      return x1;
+    }
+    else{
+      return x2;
+    }
+  } else if (discriminant === 0) {
+    // One real solution
+    const x = -b / (2 * a);
+    return x;
+  } else {
+    // Complex solutions
+    return 0; //Not applicable in this implementation
+  }
 }
 
 export const calculateSBRDesign = (inputs) => {
@@ -9,12 +52,12 @@ export const calculateSBRDesign = (inputs) => {
     rbCODmgperl, TSSmgperl, VSSmgperl, numberOfTanks, totalLiquidDepthm, decantDepthPercentage, SVImgperl, minimumDOConcentrationmgperl, bCODBODRatio, 
     effluentTSSmgperl, effluentBODmgperl, effluentCODmgperl, µm, Ks, kd, fd, Y, Ɵµm, ƟKs, Ɵkd, aerationTimehrs, settlingTimehrs, decantationTimehrs, 
     idleTimehrs, liquidAboveSludgePercentage, freeBoardm, lengthToWidthRatio, higherOxygenFactor, blowerOutletPressurebar, 
-    oxygenNeededPerKgBODkgO2perkgBOD, SOTRDepthFunction, AOTRSOTRRatio, diffusersDepthm, specificWeightOfWaterKNperm3, designTemperatureC, 
+    oxygenNeededPerKgBODkgO2perkgBOD, SOTRDepthFunction, AOTRSOTRRatio, diffusersDepthm, specificWeightOfWaterKNperm3, 
     oxygenContentInAirKgperm3, oxygenContentInAirPercentage, diffuserFoulingFactor, oxygenTransferRatio, DOSaturationRatio, siteElevationm, 
     DOSaturationToCleanWatermgperl, DOConcentrationDesignTempmgperl, standardAtmosphericPressureKNperm3, oxygenConcentrationLeavingTank, 
     fineBubbleDiffusersEfficiency } = inputs;
   
-  const lenToWidthRatio = floatToFraction(parseFloat(lengthToWidthRatio));
+  const lenToWidthRatio = floatToFraction(lengthToWidthRatio);
   const influentFlowm3perday = influentFlowMLD * 1000;
   const influentFlowm3persec = influentFlowm3perday / ( 24 * 60 * 60 );
   const peakFlowMLD = parseFloat(influentFlowMLD) * parseFloat(peakFactor);
@@ -37,10 +80,17 @@ export const calculateSBRDesign = (inputs) => {
   const totalVolumePerTankm3 = parseFloat(fillVolumePerCycle) / ( parseFloat(decantDepthPercentage) / 100 );
   const overallTimehrs = ( numberOfTanks * totalVolumePerTankm3 * 24 ) / parseFloat(peakFlowm3perday);
   const totalTankDepthm = parseFloat(totalLiquidDepthm) + parseFloat(freeBoardm);
-  const areaRequiredm2 = parseFloat(totalVolumePerTankm3) / parseFloat(totalTankDepthm);
-  const lengthOfTheTankm = Math.ceil( 10 * (parseFloat(lenToWidthRatio.numerator) * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) ))) / 10;
-  const widthOfTheTankm = Math.ceil( 10 * (parseFloat(lenToWidthRatio.denominator) * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) ))) / 10;
-  const adoptedVolumeOfOneTankm3 = parseFloat(lengthOfTheTankm) * parseFloat(widthOfTheTankm) * parseFloat(totalLiquidDepthm);
+  const areaRequiredm2 = parseFloat(totalVolumePerTankm3) / parseFloat(totalLiquidDepthm);
+  const lengthOfTheTankm = Math.ceil(10 * lenToWidthRatio.numerator * Math.sqrt( parseFloat(areaRequiredm2) / (lenToWidthRatio.numerator * lenToWidthRatio.denominator) )) / 10;
+  const widthOfTheTankm = Math.ceil(10 * lenToWidthRatio.denominator * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) )) / 10;
+  const adoptedVolumeOfOneTankm3 = Math.ceil(10 * parseFloat(lengthOfTheTankm) * parseFloat(widthOfTheTankm) * parseFloat(totalLiquidDepthm)) / 10;
+  const kdtC = kd * 1.04**(temperatureC - 20);
+  const pxtssSRTg = parseFloat(adoptedVolumeOfOneTankm3) * parseFloat(reactorMixedLiquorConcentrationmgperl);
+  const Somgperl = bCODmgperl;
+  const a = ( 1.17 * fd * kdtC * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl * kdtC ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl * kdtC );
+  const b = ( 1.17 * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl ) - ( pxtssSRTg * kdtC );
+  const c = parseFloat(-pxtssSRTg);
+  const SRTdays = solveQuadratic( a, b, c );
 
   return {
     influentFlowMLD,
@@ -89,18 +139,23 @@ export const calculateSBRDesign = (inputs) => {
     numberOfCyclesPerTankPerDay,
     totalNumberOfCyclesPerDay,
     fillVolumePerCycle,
-    settledMLSSConcentrationmgperl: settledMLSSConcentrationmgperl.toFixed(3),
+    settledMLSSConcentrationmgperl: settledMLSSConcentrationmgperl.toFixed(2),
     liquidAboveSludgePercentage,
-    ratioOfVsVtwithextraliquidAboveSludge: ratioOfVsVtwithextraliquidAboveSludge.toFixed(3),
-    fillFraction: fillFraction.toFixed(3),
-    decantDepthm,
+    ratioOfVsVtwithextraliquidAboveSludge: ratioOfVsVtwithextraliquidAboveSludge.toFixed(2),
+    fillFraction: fillFraction.toFixed(2),
+    decantDepthm: decantDepthm.toFixed(2),
     totalVolumePerTankm3,
     overallTimehrs,
     freeBoardm,
+    totalTankDepthm,
     lengthToWidthRatio,
-    lengthOfTheTankm,
-    widthOfTheTankm,
-    adoptedVolumeOfOneTankm3: adoptedVolumeOfOneTankm3.toFixed(3),
+    lengthOfTheTankm: lengthOfTheTankm.toFixed(2),
+    widthOfTheTankm: widthOfTheTankm.toFixed(2),
+    adoptedVolumeOfOneTankm3: adoptedVolumeOfOneTankm3.toFixed(2),
+    kdtC: kdtC.toFixed(4),
+    pxtssSRTg,
+    Somgperl,
+    SRTdays: SRTdays.toFixed(2),
     higherOxygenFactor,
     blowerOutletPressurebar,
     oxygenNeededPerKgBODkgO2perkgBOD,
@@ -108,7 +163,6 @@ export const calculateSBRDesign = (inputs) => {
     AOTRSOTRRatio,
     diffusersDepthm,
     specificWeightOfWaterKNperm3,
-    designTemperatureC,
     oxygenContentInAirKgperm3,
     oxygenContentInAirPercentage,
     diffuserFoulingFactor,
