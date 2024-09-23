@@ -3,6 +3,8 @@ import { TextField, Button, Grid, Box, Typography, MenuItem, Select, FormControl
 import { styled } from '@mui/system';
 import PeakFactor from '../cpheeo/PeakFactor';
 import SBRProcessParameters from '../cpheeo/SBRProcessParameters';
+import SewageParameters from '../cpheeo/SewageParameters';
+import KineticCoefficients from '../cpheeo/KineticCoefficients';
 import { Calculate } from '@mui/icons-material';
 
 
@@ -70,7 +72,6 @@ const SBRForm = ({ onCalculate }) => {
     liquidAboveSludgePercentage: '',
     freeBoardm: '',
     lengthToWidthRatio: '',
-    solidsRetentionTimeday: '',
     higherOxygenFactor: '',
     blowerOutletPressurebar: '',
     oxygenNeededPerKgBODkgO2perkgBOD: '',
@@ -106,13 +107,13 @@ const SBRForm = ({ onCalculate }) => {
   const validateInputs = (inputs) => {
     const errors = {};
     const positiveFields = [
-      'influentFlowMLD', 'temperatureC', 'reactorMixedLiquorConcentrationmgperl',
-      'influentBODmgperl', 'sBODmgperl', 'CODmgperl', 'sCODmgperl', 'rbCODmgperl',
-      'TSSmgperl', 'VSSmgperl', 'numberOfTanks', 'totalLiquidDepthm',
+      'influentFlowMLD', 'temperatureC',
+      'sBODmgperl', 'sCODmgperl', 'rbCODmgperl',
+      'numberOfTanks', 'totalLiquidDepthm',
       'SVImgperl', 'minimumDOConcentrationmgperl', 'effluentTSSmgperl',
-      'effluentBODmgperl', 'effluentCODmgperl', 'µm', 'Ks', 'kd', 'Y',
+      'effluentBODmgperl', 'effluentCODmgperl',
       'aerationTimehrs', 'settlingTimehrs', 'decantationTimehrs', 'idleTimehrs',
-      'freeBoardm', 'solidsRetentionTimeday', 'higherOxygenFactor',
+      'freeBoardm', 'higherOxygenFactor',
       'blowerOutletPressurebar', 'oxygenNeededPerKgBODkgO2perkgBOD',
       'diffusersDepthm', 'specificWeightOfWaterKNperm3', 'designTemperatureC',
       'oxygenContentInAirKgperm3', 'siteElevationm', 'DOSaturationToCleanWatermgperl',
@@ -139,10 +140,6 @@ const SBRForm = ({ onCalculate }) => {
 
     if (inputs.bCODBODRatio && (parseFloat(inputs.bCODBODRatio) < 0 || parseFloat(inputs.bCODBODRatio) > 1)) {
       errors.bCODBODRatio = 'bCOD/BOD ratio must be between 0 and 1';
-    }
-
-    if (inputs.fd && (parseFloat(inputs.fd) < 0 || parseFloat(inputs.fd) > 1)) {
-      errors.fd = 'fd must be between 0 and 1';
     }
 
     if (inputs.lengthToWidthRatio && parseFloat(inputs.lengthToWidthRatio) < 1) {
@@ -229,26 +226,29 @@ const SBRForm = ({ onCalculate }) => {
               onChange={handleChange}
             >
               {SBRProcessParameters.map((factor) => (
-                <MenuItem key={factor.id} value={factor.continuousFlowandIntermittentDecant}>
-                  {factor.parameters} : {factor.continuousFlowandIntermittentDecant}
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
                 </MenuItem>
               ))}
             </Select>
           </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Influent BOD (mg/l)"
-            name="influentBODmgperl"
-            type="number"
-            value={inputs.influentBODmgperl}
-            onChange={handleChange}
-            error={!!errors.influentBODmgperl}
-            helperText={errors.influentBODmgperl}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Influent BOD (mg/l)</InputLabel>
+            <Select
+              label="Influent BOD (mg/l)"
+              name="influentBODmgperl"
+              value={inputs.influentBODmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedTextField
@@ -265,18 +265,21 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="COD (mg/l)"
-            name="CODmgperl"
-            type="number"
-            value={inputs.CODmgperl}
-            onChange={handleChange}
-            error={!!errors.CODmgperl}
-            helperText={errors.CODmgperl}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>COD (mg/l)</InputLabel>
+            <Select
+              label="COD (mg/l)"
+              name="CODmgperl"
+              value={inputs.CODmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedTextField
@@ -307,32 +310,38 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="TSS (mg/l)"
-            name="TSSmgperl"
-            type="number"
-            value={inputs.TSSmgperl}
-            onChange={handleChange}
-            error={!!errors.TSSmgperl}
-            helperText={errors.TSSmgperl}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>TSS (mg/l)</InputLabel>
+            <Select
+              label="TSS (mg/l)"
+              name="TSSmgperl"
+              value={inputs.TSSmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="VSS (mg/l)"
-            name="VSSmgperl"
-            type="number"
-            value={inputs.VSSmgperl}
-            onChange={handleChange}
-            error={!!errors.VSSmgperl}
-            helperText={errors.VSSmgperl}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>VSS (mg/l)</InputLabel>
+            <Select
+              label="VSS (mg/l)"
+              name="VSSmgperl"
+              value={inputs.VSSmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedTextField
@@ -419,102 +428,141 @@ const SBRForm = ({ onCalculate }) => {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="µ (mg/l)"
-            name="µm"
-            type="number"
-            value={inputs.µm}
-            onChange={handleChange}
-            error={!!errors.µm}
-            helperText={errors.µm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>µ (mg/l)</InputLabel>
+            <Select
+              label="µ (mg/l)"
+              name="µm"
+              value={inputs.µm}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Ks (mg/l)"
-            name="Ksm"
-            type="number"
-            value={inputs.Ksm}
-            onChange={handleChange}
-            error={!!errors.Ksm}
-            helperText={errors.Ksm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Ks (mg/l)</InputLabel>
+            <Select
+              label="Ks (mg/l)"
+              name="Ks"
+              value={inputs.Ks}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="kd (mg/l)"
-            name="kdm"
-            type="number"
-            value={inputs.kdm}
-            onChange={handleChange}
-            error={!!errors.kdm}
-            helperText={errors.kdm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>kd (mg/l)</InputLabel>
+            <Select
+              label="kd (mg/l)"
+              name="kd"
+              value={inputs.kd}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
+        </Grid>
+        
+        <Grid item xs={12} sm={6}>
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>fd</InputLabel>
+            <Select
+              label="fd"
+              name="fd"
+              value={inputs.fd}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Y (mg/l)"
-            name="Ym"
-            type="number"
-            value={inputs.Ym}
-            onChange={handleChange}
-            error={!!errors.Ym}
-            helperText={errors.Ym}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Y (mg/l)</InputLabel>
+            <Select
+              label="Y (mg/l)"
+              name="Y"
+              value={inputs.Y}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Ɵµ (mg/l)"
-            name="Ɵµm"
-            type="number"
-            value={inputs.Ɵµm}
-            onChange={handleChange}
-            error={!!errors.Ɵµm}
-            helperText={errors.Ɵµm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Ɵµm</InputLabel>
+            <Select
+              label="Ɵµm"
+              name="Ɵµm"
+              value={inputs.Ɵµm}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="ƟKs (mg/l)"
-            name="ƟKsm"
-            type="number"
-            value={inputs.ƟKsm}
-            onChange={handleChange}
-            error={!!errors.ƟKsm}
-            helperText={errors.ƟKsm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>ƟKs</InputLabel>
+            <Select
+              label="ƟKs"
+              name="ƟKs"
+              value={inputs.ƟKs}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Ɵkd (mg/l)"
-            name="Ɵkdm"
-            type="number"
-            value={inputs.Ɵkdm}
-            onChange={handleChange}
-            error={!!errors.Ɵkdm}
-            helperText={errors.Ɵkdm}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Ɵkd</InputLabel>
+            <Select
+              label="Ɵkd"
+              name="Ɵkd"
+              value={inputs.Ɵkd}
+              onChange={handleChange}
+            >
+              {KineticCoefficients.map((factor) => (
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.parameters} : {factor.value}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedTextField
@@ -611,20 +659,6 @@ const SBRForm = ({ onCalculate }) => {
             onChange={handleChange}
             error={!!errors.lengthToWidthRatio}
             helperText={errors.lengthToWidthRatio}
-            InputProps={{ inputProps: { step: 0.01 } }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnimatedTextField
-            required
-            fullWidth
-            label="Solids Retention Time (day)"
-            name="solidsRetentionTimeday"
-            type="number"
-            value={inputs.solidsRetentionTimeday}
-            onChange={handleChange}
-            error={!!errors.solidsRetentionTimeday}
-            helperText={errors.solidsRetentionTimeday}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
