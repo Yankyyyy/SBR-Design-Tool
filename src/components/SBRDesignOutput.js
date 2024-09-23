@@ -74,7 +74,7 @@ const SBRDesignOutput = ({ outputs }) => {
     { label: 'Length of the Tank (m)', value: outputs.lengthOfTheTankm },
     { label: 'Width of the Tank (m)', value: outputs.widthOfTheTankm },
     { label: 'Adopted Volume of One Tank (m³)', value: outputs.adoptedVolumeOfOneTankm3 },
-    { label: 'Kdt (C)', value: outputs.kdtC },
+    { label: 'kdt (C)', value: outputs.kdtC },
     { label: 'PxTSS.SRT (g)', value: outputs.pxtssSRTg },
     { label: 'So (mg/L)', value: outputs.Somgperl },
     { label: 'SRT (days)', value: outputs.SRTdays },

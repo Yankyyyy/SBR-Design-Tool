@@ -85,10 +85,10 @@ export const calculateSBRDesign = (inputs) => {
   const widthOfTheTankm = Math.ceil(10 * lenToWidthRatio.denominator * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) )) / 10;
   const adoptedVolumeOfOneTankm3 = Math.ceil(10 * parseFloat(lengthOfTheTankm) * parseFloat(widthOfTheTankm) * parseFloat(totalLiquidDepthm)) / 10;
   const kdtC = kd * 1.04**(temperatureC - 20);
-  const pxtssSRTg = parseFloat(adoptedVolumeOfOneTankm3) * parseFloat(reactorMixedLiquorConcentrationmgperl);
+  const pxtssSRTg = parseFloat(totalVolumePerTankm3) * parseFloat(reactorMixedLiquorConcentrationmgperl);
   const Somgperl = bCODmgperl;
-  const a = ( 1.17 * fd * kdtC * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl * kdtC ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl * kdtC );
-  const b = ( 1.17 * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl ) - ( pxtssSRTg * kdtC );
+  const a = ( 1.1765 * fd * kdtC * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl * kdtC ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl * kdtC );
+  const b = ( 1.1765 * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl ) - ( pxtssSRTg * kdtC );
   const c = parseFloat(-pxtssSRTg);
   const SRTdays = solveQuadratic( a, b, c );
 
