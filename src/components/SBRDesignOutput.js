@@ -115,6 +115,16 @@ const SBRDesignOutput = ({ outputs }) => {
                 </Paper>
               </Grid>
             ))}
+          <Grid item xs={12} sm={6}>
+              <Paper elevation={3} sx={{ p: 2 }}>
+                <Typography variant="body2">
+                  SRT (days): <b>{outputs.SRTdays}</b>
+                </Typography>
+                <Typography variant="body2" sx={{ color: getColor(computedSRTCondition) }}>
+                  {computedSRTCondition ? 'The SRT lies between 4 to 20 days. Hence OK.' : 'The SRT doesn\'t lie between 4 to 20 days. Hence not OK.'}
+                </Typography>
+              </Paper>
+            </Grid>
           </Grid>
         </Box>
       </div>
