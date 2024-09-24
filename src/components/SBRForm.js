@@ -428,6 +428,57 @@ const SBRForm = ({ onCalculate }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <AnimatedFormControl fullWidth required>
+            <InputLabel>Effluent TSS (mg/l)</InputLabel>
+            <Select
+              label="Effluent TSS (mg/l)"
+              name="effluentTSSmgperl"
+              value={inputs.effluentTSSmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Effluent BOD (mg/l)</InputLabel>
+            <Select
+              label="Effluent BOD (mg/l)"
+              name="effluentBODmgperl"
+              value={inputs.effluentBODmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <AnimatedFormControl fullWidth required>
+            <InputLabel>Effluent COD (mg/l)</InputLabel>
+            <Select
+              label="Effluent COD (mg/l)"
+              name="effluentCODmgperl"
+              value={inputs.effluentCODmgperl}
+              onChange={handleChange}
+            >
+              {SewageParameters.map((factor) => (
+                <MenuItem key={factor.id} value={factor.concentration}>
+                  {factor.item} : {factor.concentration}
+                </MenuItem>
+              ))}
+          </Select>
+          </AnimatedFormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <AnimatedFormControl fullWidth required>
             <InputLabel>µ (mg/l)</InputLabel>
             <Select
               label="µ (mg/l)"
@@ -899,7 +950,7 @@ const SBRForm = ({ onCalculate }) => {
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <AnimatedTextField
             required
             fullWidth

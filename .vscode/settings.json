@@ -10,11 +10,17 @@
         "Elevationm",
         "Imgperl",
         "Kgperm",
+        "MLVSS",
         "Ɵkdm",
         "peakfactor",
         "perkg",
+        "permin",
         "Pressurebar",
+        "Pxbiogperday",
         "pxtss",
+        "Ratekgperhour",
+        "Ratem",
+        "Rokgperdaypertank",
         "Smgperl",
         "Somgperl",
         "SOTR",
@@ -22,7 +28,12 @@
         "Tempmgperl",
         "Timeday",
         "Timehrs",
-        "Watermgperl"
+        "Timehrsperday",
+        "Watermgperl",
+        "Xmlss",
+        "XMLSS",
+        "Xmlvss",
+        "XMLVSS"
     ],
     "cSpell.ignoreWords": [
         "Cycletime",
@@ -31,8 +42,11 @@
         "Periodhrs",
         "Requiredm",
         "Tankm",
+        "Tgperday",
         "Vtwithextraliquid",
+        "Xmlvssmgperl",
         "perday",
-        "persec"
+        "persec",
+        "pxvss"
     ]
 }
