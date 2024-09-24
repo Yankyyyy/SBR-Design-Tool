@@ -74,11 +74,20 @@ const SBRDesignOutput = ({ outputs }) => {
     { label: 'Length of the Tank (m)', value: outputs.lengthOfTheTankm },
     { label: 'Width of the Tank (m)', value: outputs.widthOfTheTankm },
     { label: 'Adopted Volume of One Tank (m³)', value: outputs.adoptedVolumeOfOneTankm3 },
-    { label: 'kdtC', value: outputs.kdtC },
-    { label: 'pxtssSRT (g)', value: outputs.pxtssSRTg },
+    { label: 'kdt (C)', value: outputs.kdtC },
+    { label: 'PxTSS.SRT (g)', value: outputs.pxtssSRTg },
     { label: 'So (mg/L)', value: outputs.Somgperl },
     { label: 'SRT (days)', value: outputs.SRTdays },
+    { label: 'PxVSS.SRT (g/day)', value: outputs.pxvssSRTgperday },
+    { label: 'XMLVSS (MLVSS Concentration)', value: outputs.Xmlvssmgperl },
+    { label: 'Fraction of MLVSS(XMLVSS/XMLSS)', value: outputs.XmlvssXmlssRatio },
+    { label: 'PxBio (g/day)', value: outputs.Pxbiogperday },
+    { label: 'Decant pumping rate (m³/min)', value: outputs.decantPumpingRatem3permin },
+    { label: 'Oxygen required per tank (Kg/day/tank)', value: outputs.Rokgperdaypertank },
+    { label: 'Total aeration time (hrs/day', value: outputs.totalAerationTimehrsperday },
+    { label: 'Average oxygen transfer rate (Kg/hour)', value: outputs.averageOxygenTransferRatekgperhour },
     { label: 'Higher Oxygen Factor', value: outputs.higherOxygenFactor },
+    { label: 'Practical average oxygen transfer rate (Kg/hour)', value: outputs.practicalAverageOxygenTransferRatekgperhour },
     { label: 'Blower Outlet Pressure (bar)', value: outputs.blowerOutletPressurebar },
     { label: 'Oxygen Needed Per Kg BOD (kg O₂/kg BOD)', value: outputs.oxygenNeededPerKgBODkgO2perkgBOD },
     { label: 'SOTR Depth Function', value: outputs.SOTRDepthFunction },
@@ -115,10 +124,10 @@ const SBRDesignOutput = ({ outputs }) => {
                 </Paper>
               </Grid>
             ))}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={12}>
               <Paper elevation={3} sx={{ p: 2 }}>
-                <Typography variant="body2">
-                  SRT (days): <b>{outputs.SRTdays}</b>
+                <Typography variant="h6" align="center" gutterBottom>
+                  <b>Design Viability Remarks</b>
                 </Typography>
                 <Typography variant="body2" sx={{ color: getColor(computedSRTCondition) }}>
                   {computedSRTCondition ? 'The SRT lies between 4 to 20 days. Hence OK.' : 'The SRT doesn\'t lie between 4 to 20 days. Hence not OK.'}

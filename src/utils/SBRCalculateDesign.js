@@ -85,12 +85,26 @@ export const calculateSBRDesign = (inputs) => {
   const widthOfTheTankm = Math.ceil(10 * lenToWidthRatio.denominator * Math.sqrt( parseFloat(areaRequiredm2) / (parseFloat(lenToWidthRatio.numerator) * parseFloat(lenToWidthRatio.denominator)) )) / 10;
   const adoptedVolumeOfOneTankm3 = Math.ceil(10 * parseFloat(lengthOfTheTankm) * parseFloat(widthOfTheTankm) * parseFloat(totalLiquidDepthm)) / 10;
   const kdtC = kd * 1.04**(temperatureC - 20);
-  const pxtssSRTg = parseFloat(adoptedVolumeOfOneTankm3) * parseFloat(reactorMixedLiquorConcentrationmgperl);
+  const pxtssSRTg = parseFloat(totalVolumePerTankm3) * parseFloat(reactorMixedLiquorConcentrationmgperl);
   const Somgperl = bCODmgperl;
-  const a = ( 1.17 * fd * kdtC * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl * kdtC ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl * kdtC );
-  const b = ( 1.17 * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl ) - ( pxtssSRTg * kdtC );
+  const a = ( 1.1765 * fd * kdtC * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl * kdtC ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl * kdtC );
+  const b = ( 1.1765 * (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) + ( (peakFlowm3perday / numberOfTanks) * nbVSSmgperl ) + ( (peakFlowm3perday / numberOfTanks) * iTSSmgperl ) - ( pxtssSRTg * kdtC );
   const c = parseFloat(-pxtssSRTg);
   const SRTdays = solveQuadratic( a, b, c );
+  const A = ( (peakFlowm3perday / numberOfTanks) * Y * Somgperl * parseFloat(SRTdays.toFixed(2)) ) / ( 1 + (parseFloat(kdtC.toFixed(4)) * parseFloat(SRTdays.toFixed(2))) );
+  const B = ( fd * parseFloat(kdtC.toFixed(4)) * Y * (peakFlowm3perday / numberOfTanks) * Somgperl * parseFloat(SRTdays.toFixed(2)) * parseFloat(SRTdays.toFixed(2)) ) / ( 1 + (parseFloat(kdtC.toFixed(4)) * parseFloat(SRTdays.toFixed(2))) );
+  const D = (peakFlowm3perday / numberOfTanks) * parseFloat(nbVSSmgperl.toFixed(3)) * parseFloat(SRTdays.toFixed(2));
+  const pxvssSRTgperday = A + B + D;
+  const Xmlvssmgperl = parseFloat(pxvssSRTgperday.toFixed(3)) / parseFloat(totalVolumePerTankm3);
+  const XmlvssXmlssRatio = parseFloat(Xmlvssmgperl) / parseFloat(reactorMixedLiquorConcentrationmgperl);
+  const A1 = ( (peakFlowm3perday / numberOfTanks) * Y * Somgperl ) / ( 1 + (parseFloat(kdtC.toFixed(4)) * parseFloat(SRTdays.toFixed(2))) );
+  const B1 = ( fd * parseFloat(kdtC.toFixed(4)) * Y * (peakFlowm3perday / numberOfTanks) * Somgperl * parseFloat(SRTdays.toFixed(2)) ) / ( 1 + (parseFloat(kdtC.toFixed(4)) * parseFloat(SRTdays.toFixed(2))) );
+  const Pxbiogperday = A1 + B1;
+  const decantPumpingRatem3permin = fillVolumePerCycle / ( decantationTimehrs * 60 );
+  const Rokgperdaypertank = ( (peakFlowm3perday / numberOfTanks) * (Somgperl / 1000) ) - ( 1.42 * Pxbiogperday / 1000 );
+  const totalAerationTimehrsperday = parseFloat(fillPeriodhrs) * parseFloat(numberOfCyclesPerTankPerDay);
+  const averageOxygenTransferRatekgperhour = parseFloat(Rokgperdaypertank) / parseFloat(totalAerationTimehrsperday);
+  const practicalAverageOxygenTransferRatekgperhour = parseFloat(averageOxygenTransferRatekgperhour) * parseFloat(higherOxygenFactor);
 
   return {
     influentFlowMLD,
@@ -153,10 +167,19 @@ export const calculateSBRDesign = (inputs) => {
     widthOfTheTankm: widthOfTheTankm.toFixed(2),
     adoptedVolumeOfOneTankm3: adoptedVolumeOfOneTankm3.toFixed(2),
     kdtC: kdtC.toFixed(4),
-    pxtssSRTg,
+    pxtssSRTg: pxtssSRTg.toFixed(3),
     Somgperl,
     SRTdays: SRTdays.toFixed(2),
+    pxvssSRTgperday: pxvssSRTgperday.toFixed(3),
+    Xmlvssmgperl: Xmlvssmgperl.toFixed(3),
+    XmlvssXmlssRatio: XmlvssXmlssRatio.toFixed(3),
+    Pxbiogperday: Pxbiogperday.toFixed(2),
+    decantPumpingRatem3permin: decantPumpingRatem3permin.toFixed(2),
+    Rokgperdaypertank: Rokgperdaypertank.toFixed(3),
+    totalAerationTimehrsperday,
+    averageOxygenTransferRatekgperhour: averageOxygenTransferRatekgperhour.toFixed(3),
     higherOxygenFactor,
+    practicalAverageOxygenTransferRatekgperhour: practicalAverageOxygenTransferRatekgperhour.toFixed(3),
     blowerOutletPressurebar,
     oxygenNeededPerKgBODkgO2perkgBOD,
     SOTRDepthFunction,
