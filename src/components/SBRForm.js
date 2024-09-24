@@ -38,58 +38,58 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
 const SBRForm = ({ onCalculate }) => {
   const [inputs, setInputs] = useState({
     influentFlowMLD: '',
-    peakFactor: '',
+    peakFactor: PeakFactor[0]?.value || '',
     temperatureC: '',
-    reactorMixedLiquorConcentrationmgperl: '',
-    influentBODmgperl: '',
-    sBODmgperl: '',
-    CODmgperl: '',
-    sCODmgperl: '',
-    rbCODmgperl: '',
-    TSSmgperl: '',
-    VSSmgperl: '',
+    reactorMixedLiquorConcentrationmgperl: SBRProcessParameters[3]?.value || '',
+    influentBODmgperl: SewageParameters[0]?.concentration || '',
+    sBODmgperl: '90',
+    CODmgperl: SewageParameters[1]?.concentration || '',
+    sCODmgperl: '115',
+    rbCODmgperl: '70',
+    TSSmgperl: SewageParameters[2]?.concentration || '',
+    VSSmgperl: SewageParameters[3]?.concentration || '',
     numberOfTanks: '',
     totalLiquidDepthm: '',
-    decantDepthPercentage: '',
-    SVImgperl: '',
-    minimumDOConcentrationmgperl: '',
-    bCODBODRatio: '',
-    effluentTSSmgperl: '',
-    effluentBODmgperl: '',
-    effluentCODmgperl: '',
-    µm: '',
-    Ks: '',
-    kd: '',
-    fd: '',
-    Y: '',
-    Ɵµm: '',
-    ƟKs: '',
-    Ɵkd: '',
+    decantDepthPercentage: '30',
+    SVImgperl: '150',
+    minimumDOConcentrationmgperl: '2',
+    bCODBODRatio: '1.6',
+    effluentTSSmgperl: SewageParameters[10]?.value || '',
+    effluentBODmgperl: SewageParameters[11]?.value || '',
+    effluentCODmgperl: SewageParameters[12]?.value || '',
+    µm: KineticCoefficients[0]?.value || '',
+    Ks: KineticCoefficients[1]?.value || '',
+    kd: KineticCoefficients[2]?.value || '',
+    fd: KineticCoefficients[3]?.value || '',
+    Y: KineticCoefficients[4]?.value || '',
+    Ɵµm: KineticCoefficients[5]?.value || '',
+    ƟKs: KineticCoefficients[6]?.value || '',
+    Ɵkd: KineticCoefficients[7]?.value || '',
     aerationTimehrs: '',
     settlingTimehrs: '',
     decantationTimehrs: '',
-    idleTimehrs: '',
-    liquidAboveSludgePercentage: '',
-    freeBoardm: '',
-    lengthToWidthRatio: '',
-    higherOxygenFactor: '',
-    blowerOutletPressurebar: '',
-    oxygenNeededPerKgBODkgO2perkgBOD: '',
-    SOTRDepthFunction: '',
-    AOTRSOTRRatio: '',
-    diffusersDepthm: '',
-    specificWeightOfWaterKNperm3: '',
-    oxygenContentInAirKgperm3: '',
-    oxygenContentInAirPercentage: '',
-    diffuserFoulingFactor: '',
-    oxygenTransferRatio: '',
-    DOSaturationRatio: '',
-    siteElevationm: '',
-    DOSaturationToCleanWatermgperl: '',
-    DOConcentrationDesignTempmgperl: '',
-    standardAtmosphericPressureKNperm3: '',
-    oxygenConcentrationLeavingTank: '',
-    fineBubbleDiffusersEfficiency: '',
+    idleTimehrs: '0',
+    liquidAboveSludgePercentage: '20',
+    freeBoardm: '0.3',
+    lengthToWidthRatio: '1',
+    higherOxygenFactor: '1.5',
+    blowerOutletPressurebar: '1.6',
+    oxygenNeededPerKgBODkgO2perkgBOD: '1.1',
+    SOTRDepthFunction: '6.56',
+    AOTRSOTRRatio: '0.33',
+    diffusersDepthm: '5.4',
+    specificWeightOfWaterKNperm3: '9.80',
+    oxygenContentInAirKgperm3: '0.29',
+    oxygenContentInAirPercentage: '0.23',
+    diffuserFoulingFactor: '0.90',
+    oxygenTransferRatio: '0.70',
+    DOSaturationRatio: '0.95',
+    siteElevationm: '310',
+    DOSaturationToCleanWatermgperl: '9.08',
+    DOConcentrationDesignTempmgperl: '10.18',
+    standardAtmosphericPressureKNperm3: '101.32',
+    oxygenConcentrationLeavingTank: '19',
+    fineBubbleDiffusersEfficiency: '35',
   });
 
   const [errors, setErrors] = useState({});
@@ -436,8 +436,8 @@ const SBRForm = ({ onCalculate }) => {
               onChange={handleChange}
             >
               {SewageParameters.map((factor) => (
-                <MenuItem key={factor.id} value={factor.concentration}>
-                  {factor.item} : {factor.concentration}
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.item} : {factor.value}
                 </MenuItem>
               ))}
           </Select>
@@ -453,8 +453,8 @@ const SBRForm = ({ onCalculate }) => {
               onChange={handleChange}
             >
               {SewageParameters.map((factor) => (
-                <MenuItem key={factor.id} value={factor.concentration}>
-                  {factor.item} : {factor.concentration}
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.item} : {factor.value}
                 </MenuItem>
               ))}
           </Select>
@@ -470,8 +470,8 @@ const SBRForm = ({ onCalculate }) => {
               onChange={handleChange}
             >
               {SewageParameters.map((factor) => (
-                <MenuItem key={factor.id} value={factor.concentration}>
-                  {factor.item} : {factor.concentration}
+                <MenuItem key={factor.id} value={factor.value}>
+                  {factor.item} : {factor.value}
                 </MenuItem>
               ))}
           </Select>
