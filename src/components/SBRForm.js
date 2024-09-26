@@ -75,19 +75,20 @@ const SBRForm = ({ onCalculate }) => {
     higherOxygenFactor: '1.5',
     blowerOutletPressurebar: '1.6',
     oxygenNeededPerKgBODkgO2perkgBOD: '1.1',
-    SOTRDepthFunction: '6.56',
-    AOTRSOTRRatio: '0.33',
+    levelOfDiffusersm: '0.6',
+    SOTEDepthFunction: '6.56',
+    AOTESOTERatio: '0.33',
     diffusersDepthm: '5.4',
-    specificWeightOfWaterKNperm3: '9.80',
+    specificWeightOfWaterKNperm3: '9.7986',
     oxygenContentInAirKgperm3: '0.29',
     oxygenContentInAirPercentage: '0.23',
     diffuserFoulingFactor: '0.90',
     oxygenTransferRatio: '0.70',
     DOSaturationRatio: '0.95',
     siteElevationm: '310',
-    DOSaturationToCleanWatermgperl: '9.08',
+    DOSaturationinCleanWatermgperl: '9.08',
     DOConcentrationDesignTempmgperl: '10.18',
-    standardAtmosphericPressureKNperm3: '101.32',
+    standardAtmosphericPressureKNperm3: '101.325',
     oxygenConcentrationLeavingTank: '19',
     fineBubbleDiffusersEfficiency: '35',
   });
@@ -112,10 +113,10 @@ const SBRForm = ({ onCalculate }) => {
       'SVImgperl', 'minimumDOConcentrationmgperl', 'effluentTSSmgperl',
       'effluentBODmgperl', 'effluentCODmgperl',
       'aerationTimehrs', 'settlingTimehrs', 'decantationTimehrs', 'idleTimehrs',
-      'freeBoardm', 'higherOxygenFactor',
+      'freeBoardm', 'higherOxygenFactor', 'levelOfDiffusersm',
       'blowerOutletPressurebar', 'oxygenNeededPerKgBODkgO2perkgBOD',
       'diffusersDepthm', 'specificWeightOfWaterKNperm3',
-      'oxygenContentInAirKgperm3', 'siteElevationm', 'DOSaturationToCleanWatermgperl',
+      'oxygenContentInAirKgperm3', 'siteElevationm', 'DOSaturationinCleanWatermgperl',
       'DOConcentrationDesignTempmgperl', 'standardAtmosphericPressureKNperm3',
       'fineBubbleDiffusersEfficiency'
     ];
@@ -758,13 +759,13 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="SOTR Depth Function"
-            name="SOTRDepthFunction"
+            label="Level of diffusers above the tank bottom (m)"
+            name="levelOfDiffusersm"
             type="number"
-            value={inputs.SOTRDepthFunction}
+            value={inputs.SOTEDepthFunction}
             onChange={handleChange}
-            error={!!errors.SOTRDepthFunction}
-            helperText={errors.SOTRDepthFunction}
+            error={!!errors.SOTEDepthFunction}
+            helperText={errors.SOTEDepthFunction}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
@@ -772,13 +773,27 @@ const SBRForm = ({ onCalculate }) => {
           <AnimatedTextField
             required
             fullWidth
-            label="AOTR/SOTR Ratio"
-            name="AOTRSOTRRatio"
+            label="SOTE Depth Function"
+            name="SOTEDepthFunction"
             type="number"
-            value={inputs.AOTRSOTRRatio}
+            value={inputs.SOTEDepthFunction}
             onChange={handleChange}
-            error={!!errors.AOTRSOTRRatio}
-            helperText={errors.AOTRSOTRRatio}
+            error={!!errors.SOTEDepthFunction}
+            helperText={errors.SOTEDepthFunction}
+            InputProps={{ inputProps: { step: 0.01 } }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <AnimatedTextField
+            required
+            fullWidth
+            label="AOTE/SOTE Ratio"
+            name="AOTESOTERatio"
+            type="number"
+            value={inputs.AOTESOTERatio}
+            onChange={handleChange}
+            error={!!errors.AOTESOTERatio}
+            helperText={errors.AOTESOTERatio}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
@@ -899,12 +914,12 @@ const SBRForm = ({ onCalculate }) => {
             required
             fullWidth
             label="DO Saturation to Clean Water (mg/l)"
-            name="DOSaturationToCleanWatermgperl"
+            name="DOSaturationinCleanWatermgperl"
             type="number"
-            value={inputs.DOSaturationToCleanWatermgperl}
+            value={inputs.DOSaturationinCleanWatermgperl}
             onChange={handleChange}
-            error={!!errors.DOSaturationToCleanWatermgperl}
-            helperText={errors.DOSaturationToCleanWatermgperl}
+            error={!!errors.DOSaturationinCleanWatermgperl}
+            helperText={errors.DOSaturationinCleanWatermgperl}
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
@@ -950,7 +965,7 @@ const SBRForm = ({ onCalculate }) => {
             InputProps={{ inputProps: { step: 0.01 } }}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <AnimatedTextField
             required
             fullWidth
