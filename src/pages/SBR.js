@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SBRForm from '../components/SBRForm';
 import SBRDesignOutput from '../components/SBRDesignOutput';
 import { calculateSBRDesign } from '../utils/SBRCalculateDesign';
-import { Container, CssBaseline, Typography, Paper, Box, Button } from '@mui/material';
+import { Container, CssBaseline, Typography, Paper, Box } from '@mui/material';
 import { blue, green } from '@mui/material/colors';
 
 const SBR = () => {
@@ -56,23 +56,6 @@ const SBR = () => {
 
             <SBRForm onCalculate={handleCalculate} />
             {outputs && <SBRDesignOutput outputs={outputs} />}
-
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                mt: 3,
-                px: 4,
-                py: 1,
-                background: `linear-gradient(90deg, ${blue[600]}, ${green[500]})`,
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-                '&:hover': {
-                  background: `linear-gradient(90deg, ${blue[700]}, ${green[600]})`,
-                },
-              }}
-            >
-              Calculate Again
-            </Button>
           </Paper>
         </Box>
       </Container>
