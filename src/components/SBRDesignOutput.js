@@ -1,12 +1,10 @@
 import React from 'react';
 import { Typography, Button, Grid, Paper, Box } from '@mui/material';
-import ExportPDF from '../utils/ExportPDF';
+import { exportToPDF, exportToExcel } from '../utils/ExportPDF';
 
 const SBRDesignOutput = ({ outputs }) => {
 
-  const handleClick = () => {
-    ExportPDF('divToPrint');
-  };
+  const title = "SBR Design Output";
 
   const getColor = (condition) => {
     return condition ? 'green' : 'red';
@@ -158,6 +156,15 @@ const SBRDesignOutput = ({ outputs }) => {
     { label: 'Design airflow rate (m³/hour)', value: outputs.designAirFlowRateNm3perhour }
   ];
 
+    // Handlers for exporting
+    const handleExportPDF = () => {
+      exportToPDF(outputFields, title);
+    };
+  
+    const handleExportExcel = () => {
+      exportToExcel(outputFields, title);
+    };
+
   return (
     <div>
       <div id="divToPrint">
@@ -202,11 +209,21 @@ const SBRDesignOutput = ({ outputs }) => {
           </Grid>
         </Box>
       </div>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Grid item xs={12} sm={12}>
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Button variant="contained" color="primary" onClick={handleExportPDF}>
+            Export to PDF
+          </Button>
+          <Button variant="contained" color="secondary" onClick={handleExportExcel} sx={{ ml: 2 }}>
+            Export to Excel
+          </Button>
+        </Paper>
+      </Grid>
+      {/* <Typography variant="h4" align="center" gutterBottom>
         <Button type="submit" variant="contained" color="primary" onClick={handleClick} sx={{ mt: 3 }}>
           Download
         </Button>
-      </Typography>
+      </Typography> */}
     </div>
   );
 };

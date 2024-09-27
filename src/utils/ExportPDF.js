@@ -1,66 +1,39 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
-const ExportPDF = async (elementId) => {
-  const input = document.getElementById(elementId);
+// Function to export as PDF
+export const exportToPDF = (data, title) => {
+  const doc = new jsPDF();
 
-  // Convert the HTML element to a canvas
-  const canvas = await html2canvas(input, {
-    scale: 2, // Improves quality
-    useCORS: true, // Handles images from different origins
+  // Add title
+  doc.text(title, 20, 10);
+
+  // Convert data array to format suitable for autoTable
+  const tableData = data.map(field => [field.label, field.value]);
+
+  // Create table
+  autoTable(doc, {
+    head: [['Parameter', 'Value']],
+    body: tableData,
   });
 
-  const imgData = canvas.toDataURL('image/png');
-
-  // Create jsPDF instance, A4 size in pt (210mm x 297mm)
-  const pdf = new jsPDF('p', 'pt', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  // Set margins
-  const margin = 20; // 20pt margin
-  const imgWidth = pageWidth - 2 * margin;
-
-  // Calculate height of the image proportionally to the width
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  let heightLeft = imgHeight;
-  let position = margin; // Start position on first page
-
-  // Draw the border (Rectangle around the page content)
-  const borderWidth = 2; // Define border thickness
-  pdf.setLineWidth(borderWidth); // Set border thickness
-  pdf.rect(margin / 2, margin / 2, pageWidth - margin, pageHeight - margin, 'S'); // Draw rectangle
-
-  // Add first part of the image
-  pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-
-  // Calculate the remaining height that fits within a single page (minus margins)
-  heightLeft -= pageHeight - 2 * margin;
-
-  // Continue to add pages with remaining content
-  while (heightLeft > 0) {
-    pdf.addPage();
-    position = margin; // Reset position for new page
-    // Draw border on new page
-    pdf.rect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin, 'S'); // Draw border
-
-
-    // Continue to add the rest of the image
-    pdf.addImage(
-      imgData, 
-      'PNG', 
-      margin, 
-      position - (imgHeight - heightLeft), // Offset by the height of what’s left
-      imgWidth, 
-      imgHeight
-    );
-
-    heightLeft -= pageHeight - 2 * margin; // Subtract for the next page
-  }
-
-  // Download the PDF
-  pdf.save('download_fixed.pdf');
+  // Save the PDF
+  doc.save(`${title}.pdf`);
 };
 
-export default ExportPDF;
+// Function to export as Excel
+export const exportToExcel = (data, title) => {
+  // Convert data array into sheet-friendly format
+  const worksheetData = data.map(field => ({ Parameter: field.label, Value: field.value }));
+
+  // Create a new workbook and worksheet
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+  // Add the worksheet to the workbook
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Design Output');
+
+  // Write the file to download
+  XLSX.writeFile(workbook, `${title}.xlsx`);
+};
