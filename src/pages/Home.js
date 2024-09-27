@@ -9,7 +9,7 @@ import Fade from '@mui/material/Fade';
 // Custom styled components for animation and design
 const AnimatedCard1 = styled(Card)(({ theme }) => ({
   my: 4,
-  backgroundColor: '#b0d7ff',
+  backgroundColor: 'rgba(176, 215, 255, 0.8)',
   boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
   transition: 'transform 0.3s ease-in-out, background-color 0.3s ease-in-out',
   '&:hover': {
@@ -20,7 +20,7 @@ const AnimatedCard1 = styled(Card)(({ theme }) => ({
 
 const AnimatedCard2 = styled(Card)(({ theme }) => ({
   my: 4,
-  backgroundColor: '#e1bee7',
+  backgroundColor: 'rgba(225, 190, 231, 0.8)',
   boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
   transition: 'transform 0.3s ease-in-out, background-color 0.3s ease-in-out',
   '&:hover': {
@@ -31,7 +31,7 @@ const AnimatedCard2 = styled(Card)(({ theme }) => ({
 
 const AnimatedCard3 = styled(Card)(({ theme }) => ({
   my: 4,
-  backgroundColor: '#b3ffb5',
+  backgroundColor: 'rgba(179, 255, 181, 0.8)',
   boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
   transition: 'transform 0.3s ease-in-out, background-color 0.3s ease-in-out',
   '&:hover': {
