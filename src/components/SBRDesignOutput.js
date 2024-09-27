@@ -192,8 +192,8 @@ const SBRDesignOutput = ({ outputs }) => {
                 </Typography>
               </Paper>
             </Grid>
-          ))}      
-          <Grid item xs={12} sm={12}>
+            ))}      
+            <Grid item xs={12} sm={12}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" align="center" gutterBottom>
                   <b>Design Viability Remarks</b>
@@ -219,11 +219,6 @@ const SBRDesignOutput = ({ outputs }) => {
           </Button>
         </Paper>
       </Grid>
-      {/* <Typography variant="h4" align="center" gutterBottom>
-        <Button type="submit" variant="contained" color="primary" onClick={handleClick} sx={{ mt: 3 }}>
-          Download
-        </Button>
-      </Typography> */}
     </div>
   );
 };
