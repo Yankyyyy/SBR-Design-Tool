@@ -1,40 +1,39 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
-const ExportPDF = async (elementId) => {
-  const input = document.getElementById(elementId);
+// Function to export as PDF
+export const exportToPDF = (data, title) => {
+  const doc = new jsPDF();
 
-  const canvas = await html2canvas(input, {
-    scale: 2, // Adjusts the scale to improve quality
-    useCORS: true, // Use this if your images are from a different origin
+  // Add title
+  doc.text(title, 20, 10);
+
+  // Convert data array to format suitable for autoTable
+  const tableData = data.map(field => [field.label, field.value]);
+
+  // Create table
+  autoTable(doc, {
+    head: [['Parameter', 'Value']],
+    body: tableData,
   });
 
-  const imgData = canvas.toDataURL('image/png');
-
-  // A4 size in pt (210mm x 297mm)
-  const pdf = new jsPDF('p', 'pt', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  const imgWidth = pageWidth;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  let heightLeft = imgHeight;
-  let position = 0;
-
-  // Add the image to the PDF
-  pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
-
-  // Add additional pages if necessary
-  while (heightLeft >= 0) {
-    position = heightLeft - imgHeight;
-    pdf.addPage();
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-  }
-
-  pdf.save('download.pdf');
+  // Save the PDF
+  doc.save(`${title}.pdf`);
 };
 
-export default ExportPDF;
+// Function to export as Excel
+export const exportToExcel = (data, title) => {
+  // Convert data array into sheet-friendly format
+  const worksheetData = data.map(field => ({ Parameter: field.label, Value: field.value }));
+
+  // Create a new workbook and worksheet
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+  // Add the worksheet to the workbook
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Design Output');
+
+  // Write the file to download
+  XLSX.writeFile(workbook, `${title}.xlsx`);
+};
