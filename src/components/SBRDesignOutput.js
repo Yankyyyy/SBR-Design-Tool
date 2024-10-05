@@ -69,7 +69,7 @@ const SBRDesignOutput = ({ outputs }) => {
     { label: 'Total cycle time, Tc (hrs)', value: outputs.totalCycletimehrs },
     { label: 'Number of Cycles Per Tank Per Day', value: outputs.numberOfCyclesPerTankPerDay },
     { label: 'Total Number of Cycles Per Day', value: outputs.totalNumberOfCyclesPerDay },
-    { label: 'Fill Volume Per Cycle (m³)', value: outputs.fillVolumePerCycle },
+    { label: 'Fill Volume Per Cycle (m³)', value: outputs.fillVolumePerCyclem3 },
     { label: 'FILL FRACTION' },
     { label: 'Settled MLSS Concentration, XS based on the SVI value (mg/L)', value: outputs.settledMLSSConcentrationmgperl },
     { label: 'Liquid Above Sludge (%)', value: outputs.liquidAboveSludgePercentage },
