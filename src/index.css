@@ -8,6 +8,12 @@ body {
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  overflow: auto; /* This line will allow the page to be scrollable */
+}
+
+body::-webkit-scrollbar {
+  width: 0px;  /* Hide the scrollbar width */
+  background: transparent;  /* Optional: makes the track invisible */
 }
 
 #output {
